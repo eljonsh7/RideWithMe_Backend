@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Ban;
 use App\Models\User;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -24,7 +25,7 @@ class UserController extends Controller
                 return response()->json(['message' => 'Invalid credentials!'], 401);
             }
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json(['message' => 'User not found!'], 401);
         }
 
@@ -37,7 +38,39 @@ class UserController extends Controller
         }
 
         $token = $user->createToken('auth_token')->plainTextToken;
-        return response()->json(['token' => $token, 'user'=>$user], 200);
+        return response()->json(['token' => $token, 'user'=>$user]);
     }
 
+    public function signup(Request $request)
+    {
+        $request->validate([
+            'firstName' => 'required|string',
+            'lastName' => 'required|string',
+            'role' => 'required|string',
+            'email' => 'required|string',
+            'password' => 'required|string',
+        ]);
+
+        try {
+            $user = User::where('email', $request->email)->first();
+            if ($user) {
+                return response()->json(['message' => 'A user with this email already exists.'], 401);
+            } else {
+                $user = new User();
+
+                $user->firstName = $request->firstName;
+                $user->lastName = $request->lastName;
+                $user->role = $request->role;
+                $user->email = $request->email;
+                $user->password = Hash::make($request->password);
+
+                $user->save();
+
+                $token = $user->createToken('auth_token')->plainTextToken;
+                return response()->json(['message' => 'User created successfully', 'user' => $user, 'token' => $token], 201);
+            }
+        } catch (Exception $e) {
+            return response()->json(['message' => 'An error occurred.', 'error' => $e->getMessage()], 500);
+        }
+    }
 }
