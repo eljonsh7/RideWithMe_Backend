@@ -5,13 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class User extends Model
+class Ban extends Model
 {
     use HasFactory;
-
     protected $primaryKey = 'id';
 
     protected $fillable = [
-        'id', 'first_name', 'last_name', 'email', 'password', 'role',
+        'id', 'user_id', 'date_until', 'time',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }
