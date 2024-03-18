@@ -12,6 +12,7 @@ class User extends Authenticatable
     use HasFactory,HasApiTokens;
 
     protected $primaryKey = 'id';
+    public $incrementing = false;
 
     protected $fillable = [
         'id', 'first_name', 'last_name', 'email', 'password', 'role',
