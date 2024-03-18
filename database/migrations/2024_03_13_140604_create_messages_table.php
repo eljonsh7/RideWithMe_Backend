@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignUuid('user_id')->constrained('users');
             $table->text('content');
             $table->string('type');
+            $table->timestamps();
         });
 
         Schema::enableForeignKeyConstraints();

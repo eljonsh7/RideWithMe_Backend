@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignUuid('sender_id')->constrained('users');
             $table->uuid('recipient_id');
             $table->string('type');
+            $table->timestamps();
         });
 
         Schema::enableForeignKeyConstraints();

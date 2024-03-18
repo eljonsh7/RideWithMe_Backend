@@ -21,6 +21,7 @@ return new class extends Migration
             $table->foreignUuid('location_id')->constrained('locations');
             $table->dateTime('datetime');
             $table->integer('passengers_number');
+            $table->timestamps();
         });
 
         Schema::enableForeignKeyConstraints();

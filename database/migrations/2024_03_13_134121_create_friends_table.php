@@ -17,6 +17,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->foreignUuid('user1_id')->constrained('users');
             $table->foreignUuid('user2_id')->constrained('users');
+            $table->timestamps();
         });
 
         Schema::enableForeignKeyConstraints();

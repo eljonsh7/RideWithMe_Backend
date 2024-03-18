@@ -26,9 +26,9 @@ return new class extends Migration
     /**
      * Reverse the migrations.
      */
-    
+
     public function down(): void
     {
-        Schema::dropIfExists('reservations_requests');
+        Schema::dropIfExists('bans');
     }
 };

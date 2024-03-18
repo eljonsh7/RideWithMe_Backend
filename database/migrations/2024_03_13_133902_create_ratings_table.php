@@ -17,6 +17,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->foreignUuid('rated_user_id')->constrained('users');
             $table->foreignUuid('rater_id')->constrained('users');
+            $table->timestamps();
         });
 
         Schema::enableForeignKeyConstraints();

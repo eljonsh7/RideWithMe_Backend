@@ -17,6 +17,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->foreignUuid('city_id')->constrained('cities');
             $table->text('name');
+            $table->timestamps();
         });
 
         Schema::enableForeignKeyConstraints();

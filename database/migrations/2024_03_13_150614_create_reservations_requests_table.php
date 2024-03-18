@@ -17,6 +17,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->foreignUuid('user_id')->constrained('users');
             $table->foreignUuid('route_id')->constrained('routes');
+            $table->timestamps();
         });
 
         Schema::enableForeignKeyConstraints();
@@ -25,7 +26,7 @@ return new class extends Migration
     /**
      * Reverse the migrations.
      */
-    
+
     public function down(): void
     {
         Schema::dropIfExists('reservations_requests');

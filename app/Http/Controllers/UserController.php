@@ -8,6 +8,8 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+use Ramsey\Uuid\Uuid;
 
 class UserController extends Controller
 {
@@ -26,7 +28,7 @@ class UserController extends Controller
             }
 
         } catch (Exception $e) {
-            return response()->json(['message' => 'User not found!'], 401);
+            return response()->json(['message' => 'An error occurred.', 'error' => $e->getMessage()], 500);
         }
 
         $bannedUser = Ban::where('user_id', $user->id)->first();
@@ -58,8 +60,9 @@ class UserController extends Controller
             } else {
                 $user = new User();
 
-                $user->firstName = $request->firstName;
-                $user->lastName = $request->lastName;
+                $user->id = Str::uuid();
+                $user->first_name = $request->firstName;
+                $user->last_name = $request->lastName;
                 $user->role = $request->role;
                 $user->email = $request->email;
                 $user->password = Hash::make($request->password);

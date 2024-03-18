@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('year');
             $table->text('thumbnail');
             $table->string('color');
+            $table->timestamps();
         });
 
         Schema::enableForeignKeyConstraints();
@@ -28,7 +29,7 @@ return new class extends Migration
     /**
      * Reverse the migrations.
      */
-    
+
     public function down(): void
     {
         Schema::dropIfExists('user_cars');

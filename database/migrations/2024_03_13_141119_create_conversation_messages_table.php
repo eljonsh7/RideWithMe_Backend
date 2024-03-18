@@ -17,6 +17,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->foreignUuid('conversation_id')->constrained('conversations');
             $table->foreignUuid('message_id')->constrained('messages');
+            $table->timestamps();
         });
 
         Schema::enableForeignKeyConstraints();
