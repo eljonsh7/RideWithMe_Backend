@@ -18,6 +18,7 @@ return new class extends Migration
             $table->foreignUuid('reporter_id')->constrained('users');
             $table->foreignUuid('reported_user_id')->constrained('users');
             $table->string('reason');
+            $table->timestamps();
         });
 
         Schema::enableForeignKeyConstraints();

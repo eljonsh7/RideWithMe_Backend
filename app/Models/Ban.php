@@ -11,7 +11,7 @@ class Ban extends Model
     protected $primaryKey = 'id';
 
     protected $fillable = [
-        'id', 'user_id', 'date_until', 'time',
+        'id', 'user_id', 'date_until',
     ];
 
     public function user()

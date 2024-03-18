@@ -16,8 +16,8 @@ return new class extends Migration
         Schema::create('bans', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('user_id')->constrained('users');
-            $table->date('date_until');
-            $table->time('time');
+            $table->timestamp('date_until');
+            $table->timestamps();
         });
 
         Schema::enableForeignKeyConstraints();

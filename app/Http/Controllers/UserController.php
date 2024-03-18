@@ -32,15 +32,22 @@ class UserController extends Controller
         }
 
         $bannedUser = Ban::where('user_id', $user->id)->first();
-        if($bannedUser){
+        if ($bannedUser) {
             $dateUntil = Carbon::parse($bannedUser->date_until);
-            $remainingDays = now()->diffInDays($dateUntil);
+            $currentTime = now();
 
-            return response()->json(['message' => 'User is banned!', 'remaining_days' => $remainingDays], 403);
+            $remainingHours = round($dateUntil->diffInMinutes($currentTime) / 60, 2);
+            $remainingDays = ceil($remainingHours / 24);
+
+            $response = ($remainingDays <= 1)
+                ? ['message' => 'User is banned!', 'remaining_hours' => $remainingHours]
+                : ['message' => 'User is banned!', 'remaining_days' => $remainingDays];
+
+            return response()->json($response, 403);
         }
 
         $token = $user->createToken('auth_token')->plainTextToken;
-        return response()->json(['token' => $token, 'user'=>$user]);
+        return response()->json(['token' => $token, 'user' => $user]);
     }
 
     public function signup(Request $request)
