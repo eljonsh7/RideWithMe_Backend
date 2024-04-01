@@ -11,17 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::disableForeignKeyConstraints();
-
-        Schema::create('ratings', function (Blueprint $table) {
+        Schema::create('temp_users', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('rated_user_id')->constrained('users');
-            $table->foreignUuid('rater_id')->constrained('users');
-            $table->integer('stars_number');
+            $table->string('first_name');
+            $table->string('last_name');
+            $table->string('email');
+            $table->text('password');
+            $table->string('role');
+            $table->string('token');
             $table->timestamps();
         });
-
-        Schema::enableForeignKeyConstraints();
     }
 
     /**
@@ -29,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('ratings');
+        Schema::dropIfExists('temp_users');
     }
 };
