@@ -25,4 +25,6 @@ Route::post('v1/signup', [UserController::class, 'signup']);
 Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
     Route::post('cities/store', [LocationController::class, 'storeCity']);
     Route::delete('cities/delete/{cityId}', [LocationController::class, 'deleteCity']);
+    Route::post('locations/store', [LocationController::class, 'storeLocation']);
+    Route::delete('locations/delete/{locationId}', [LocationController::class, 'deleteLocation']);
 });

@@ -14,6 +14,7 @@ class Location extends Model
         'id', 'city_id', 'name',
     ];
 
+    public $incrementing = false;
     public function city()
     {
         return $this->belongsTo(City::class, 'city_id');
