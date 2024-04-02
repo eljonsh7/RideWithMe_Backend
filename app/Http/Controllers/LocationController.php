@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\City;
+use App\Models\Location;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 
