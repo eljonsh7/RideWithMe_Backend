@@ -9,7 +9,7 @@ class City extends Model
 {
     use HasFactory;
     protected $primaryKey = 'id';
-
+    public $incrementing = false;
     protected $fillable = [
         'id', 'name', 'country',
     ];

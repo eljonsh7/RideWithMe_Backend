@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\LocationController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -21,6 +22,7 @@ Route::post('v1/signup', [UserController::class, 'signup']);
 
 
 //Middleware routes
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
+    Route::post('cities/store', [LocationController::class, 'storeCity']);
+    Route::delete('cities/delete/{cityId}', [LocationController::class, 'deleteCity']);
 });
