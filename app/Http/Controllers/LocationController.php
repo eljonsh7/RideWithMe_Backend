@@ -46,4 +46,42 @@ class LocationController extends Controller
 
     }
 
+    public function storeLocation(Request $request)
+    {
+        $request->validate([
+            'cityId' => 'required|string',
+            'name' => 'required|string',
+            'googleMapsLink' => 'string'
+        ]);
+
+        try {
+            $location = Location::where('name',$request->name)->first();
+            if($location){
+                return response()->json(['message' => 'A location with this name already exists.'], 401);
+            }
+            $location = new Location();
+            $location->id = Str::uuid();
+            $location->city_id = $request->cityId;
+            $location->name = $request->name;
+            $location->google_maps_link = ($request->googleMapsLink != null) ? $request->googleMapsLink : null;
+
+            $location->save();
+            return response()->json(['message' => 'Location created successfully', 'location' => $location], 201);
+
+
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'An error occurred.', 'error' => $e->getMessage()], 500);
+        }
+
+    }
+
+    public function deleteLocation($locationId){
+        $location = Location::findOrFail($locationId);
+        if($location){
+            $location->delete();
+            return response()->json(['message'=>'Location deleted successfully.'],200);
+        }
+        return response()->json(['message'=>'Location not found.'],404);
+    }
+
 }
