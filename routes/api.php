@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\LocationController;
+use App\Http\Controllers\RouteController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -19,6 +20,7 @@ use Illuminate\Support\Facades\Route;
 //Public routes
 Route::post('v1/login', [UserController::class, 'login']);
 Route::post('v1/signup', [UserController::class, 'signup']);
+Route::post('v1/routes', [RouteController::class,'show']);
 
 
 //Middleware routes
