@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\City;
 use App\Models\Location;
+use Exception;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 
@@ -47,6 +48,40 @@ class LocationController extends Controller
 
     }
 
+    public function getAllCities()
+    {
+        try {
+            $cities = City::get();
+            return response()->json(['cities' => $cities], 200);
+        }catch (Exception $e){
+            return response()->json(['message' => 'An error occurred.', 'error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function updateCity(Request $request,$id)
+    {
+        try {
+            $request->validate([
+                'name' => 'nullable|string',
+                'country' => 'nullable|string'
+            ]);
+
+            $city = City::findOrFail($id);
+
+            $fillableFields = ['name', 'country'];
+            foreach ($fillableFields as $field) {
+                if ($request->filled($field)) {
+                    $city->$field = $request->$field;
+                }
+            }
+            $city->save();
+
+            return response()->json(['message' => 'City updated successfully', 'city' => $city], 200);
+        } catch (Exception $e) {
+            return response()->json(['message' => 'An error occurred: ' . $e->getMessage()], 500);
+        }
+    }
+
     public function storeLocation(Request $request)
     {
         $request->validate([
@@ -83,6 +118,40 @@ class LocationController extends Controller
             return response()->json(['message'=>'Location deleted successfully.'],200);
         }
         return response()->json(['message'=>'Location not found.'],404);
+    }
+
+    public function getAllLocations()
+    {
+        try {
+            $locations = Location::get();
+            return response()->json(['locations' => $locations], 200);
+        }catch (Exception $e){
+            return response()->json(['message' => 'An error occurred.', 'error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function updateLocation(Request $request,$id)
+    {
+        try {
+            $request->validate([
+                'name' => 'nullable|string',
+                'google_maps_link' => 'nullable|string'
+            ]);
+
+            $location = Location::findOrFail($id);
+
+            $fillableFields = ['name', 'google_maps_link'];
+            foreach ($fillableFields as $field) {
+                if ($request->filled($field)) {
+                    $location->$field = $request->$field;
+                }
+            }
+            $location->save();
+
+            return response()->json(['message' => 'Location updated successfully', 'location' => $location], 200);
+        } catch (Exception $e) {
+            return response()->json(['message' => 'An error occurred: ' . $e->getMessage()], 500);
+        }
     }
 
 }

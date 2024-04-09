@@ -83,4 +83,41 @@ class UserController extends Controller
             return response()->json(['message' => 'An error occurred.', 'error' => $e->getMessage()], 500);
         }
     }
+
+
+    public function getAllUsers()
+    {
+        try {
+            $users = User::get();
+            return response()->json(['users' => $users], 200);
+        }catch (Exception $e){
+            return response()->json(['message' => 'An error occurred.', 'error' => $e->getMessage()], 500);
+        }
+    }
+
+    public function updateUser(Request $request,$id)
+    {
+        try {
+            $request->validate([
+                'first_name' => 'nullable|string',
+                'last_name' => 'nullable|string',
+                'role' => 'nullable|string',
+                'email' => 'nullable|string'
+            ]);
+
+            $user = User::findOrFail($id);
+
+            $fillableFields = ['first_name', 'last_name','role','email'];
+            foreach ($fillableFields as $field) {
+                if ($request->filled($field)) {
+                    $user->$field = $request->$field;
+                }
+            }
+            $user->save();
+
+            return response()->json(['message' => 'User updated successfully', 'user' => $user], 200);
+        } catch (Exception $e) {
+            return response()->json(['message' => 'An error occurred: ' . $e->getMessage()], 500);
+        }
+    }
 }

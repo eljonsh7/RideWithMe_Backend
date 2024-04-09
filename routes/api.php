@@ -20,13 +20,21 @@ use Illuminate\Support\Facades\Route;
 //Public routes
 Route::post('v1/login', [UserController::class, 'login']);
 Route::post('v1/signup', [UserController::class, 'signup']);
-Route::post('v1/routes', [RouteController::class,'show']);
-
 
 //Middleware routes
 Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
+    Route::get('users/get', [UserController::class, 'getAllUsers']);
+    Route::put('users/update/{id}', [UserController::class, 'updateUser']);
+
     Route::post('cities/store', [LocationController::class, 'storeCity']);
     Route::delete('cities/delete/{cityId}', [LocationController::class, 'deleteCity']);
+    Route::get('cities/get', [LocationController::class, 'getAllCities']);
+    Route::put('cities/update/{id}', [LocationController::class, 'updateCity']);
+
     Route::post('locations/store', [LocationController::class, 'storeLocation']);
     Route::delete('locations/delete/{locationId}', [LocationController::class, 'deleteLocation']);
+    Route::get('locations/get', [LocationController::class, 'getAllLocations']);
+    Route::put('locations/update/{id}', [LocationController::class, 'updateLocation']);
+
+    Route::post('v1/routes', [RouteController::class,'search']);
 });
