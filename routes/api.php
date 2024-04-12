@@ -36,5 +36,10 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
     Route::get('locations/get', [CityController::class, 'getAllLocations']);
     Route::put('locations/update/{id}', [CityController::class, 'updateLocation']);
 
-    Route::post('v1/routes', [RouteController::class,'search']);
+    Route::get('/routes/get', [RouteController::class,'index']);
+    Route::get('/routes/search', [RouteController::class,'search']);
+    Route::post('/routes/add', [RouteController::class, 'addRoute']);
+    Route::delete('/routes/delete/{id}', [RouteController::class, 'deleteRoute']);
+    Route::get('/routes/{id}', [RouteController::class, 'getRoute']);
+    Route::get('/routes/user/{id}', [RouteController::class, 'getUserRoutes']);
 });
