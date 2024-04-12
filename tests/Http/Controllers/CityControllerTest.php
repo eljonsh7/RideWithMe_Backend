@@ -20,7 +20,7 @@ class CityControllerTest extends \Tests\TestCase
         $this->controller = $app->make(CityController::class);
     }
 
-    public function testSignup()
+    public function testAddAndGetCities()
     {
         $request = new Request([
             'name' => 'Drenas',
@@ -35,8 +35,8 @@ class CityControllerTest extends \Tests\TestCase
             'country' => 'Kosova'
         ]);
 
-        $response = $this->controller->storeCity($request, "1");
-        $this->assertEquals(201, $response->getStatusCode());
+        $response = $this->controller->updateCity($request, "1");
+        $this->assertEquals(404, $response->getStatusCode());
 
 
         $response = $this->controller->getAllCities();

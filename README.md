@@ -1,66 +1,28 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+<b>ORM në Laravel</b><br>
+Në projektin tonë "Ride With Me", ne përdorim ORM-në e ofruar nga Laravel, Eloquent, për të përmirësuar komunikimin me Bazën e të Dhënave dhe për të rritur efikasitetin e zhvillimit. Eloquent shërben si një urë lidhëse midis kodit të orientuar në objekt të aplikacionit dhe bazës së të dhënave, duke larguar shumë nga kompleksiteti i lidhur tradicionalisht me menaxhimin e bazës së të dhënave. Eloquent ofron një qasje intuitive për të punuar me bazën e të dhënave duke i lejuar zhvilluesit të ndërveprojnë me tabelat e bazës së të dhënave përmes sintaksës së PHP dhe query të SQL. Veçori si migrimet, seeding dhe model factories, thjeshtojnë konfigurimin dhe mirëmbajtjen e bazës së të dhënave, duke mundësuar cikle të shpejta zhvillimi dhe bashkëpunim më të lehtë midis anëtarëve të ekipit. Duke përdorur Eloquent në projektin "Ride With Me", ne synuam të përshpejtojmë zhvillimin, të përmirësojmë lexueshmërinë e kodit dhe të sigurojmë shkallëzueshmëri ndërsa projekti zhvillohet.
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+<br><br><b>Integrimi në projekt</b><br>
+Eloquent ORM integrohet pa probleme në strukturën e projektit Laravel, duke e bërë menaxhimin e bazës së të dhënave të drejtpërdrejtë dhe efikas. Modelet e Eloquent zakonisht ruhen brenda directory app/Models. Ndërsa Laravel trajton automatikisht pjesën më të madhe të konfigurimit, ne duhet të ndryshojmë settings-at e lidhjes së bazës së të dhënave në fajllin .env për të siguruar inicializimin e duhur. Kjo përfshin përcaktimin e driverit të bazës së të dhënave, hostit, portit, emrit të bazës së të dhënave, emrit të përdoruesit dhe fjalëkalimit. Për më tepër, ne duhet të sigurohemi që tabelat e nevojshme të bazës së të dhënave të korrespondojnë me modelet e tona Eloquent, qoftë duke përdorur sistemin e migrimit të Laravel ose duke gjeneruar modele nga tabelat ekzistuese duke përdorur komandën artisan.
 
-## About Laravel
+<br><b>Implementimi i Migrimeve</b><br>
+Në Laravel, migrimet ofrojnë një mënyrë të përshtatshme për të menaxhuar skemat e bazës së të dhënave dhe për të siguruar qëndrueshmëri në mjediset e zhvillimit. Migrimet janë fajll të PHP të ruajtura në folderin database/migrations dhe përdoren për të përcaktuar ndryshimet e bazës së të dhënave në një mënyrë të kontrolluar. Çdo fajll migrimi përmban dy metoda: up() dhe down(). Metoda up() specifikon ndryshimet që do të aplikohen në bazën e të dhënave, të tilla si krijimi ose modifikimi i tabelave, shtimi i kolonave. Anasjelltas, metoda down() përcakton procedurën e rikthimit për të rikthyer ndryshimet e bëra nga metoda up(), duke siguruar mundësinë e rikthimit të migrimeve nëse është e nevojshme. Disa nga migrimet në projektin tonë janë: create_users_table, create_locations_table, create_routes_table, create_reservations_table. Metoda up() te migrimi create_reservations_table:
+<br><img src="https://cdn.discordapp.com/attachments/1038101561735401524/1228450137622450288/image.png?ex=662c1658&is=6619a158&hm=a4500686753c8f62851578cb8efab55320ad3ab21bdd621162cc1744a1c876d0&" />
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Kështu kemi krijuar të gjitha migrimet e nevojshme , dhe përmes komandës “php artisan migrate” krijohen tabelat në bazën e të dhënave duke u bazuar në funksionet up() të secilit migrim.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+<b>ORM për CRUD </b><br>
+Me Eloquent, operacionet CRUD nuk janë sfidë, duke reduktuar sasinë e kodit që zakonisht vjen me manipulimin e bazës së të dhënave. Ky abstraksion na fuqizon ne zhvilluesve të përqendrohemi në logjikën e aplikacionit në vend që të fokusohemi me operacionet e bazës së të dhënave të nivelit të ulët, duke rezultuar në kod më të pastër dhe më të mirëmbajtur. Shembull ku kemi krijuar operacionet CRUD per Routes përmes Eloquent:
+<br><img src="https://cdn.discordapp.com/attachments/1038101561735401524/1228450221265125466/image.png?ex=662c166c&is=6619a16c&hm=2b9cccec97c8254d88f6455b88eab57a9886347937b29197df0a2840ddf4c4b9&" />
+<br><img src="https://cdn.discordapp.com/attachments/1038101561735401524/1228450235819495555/image.png?ex=662c166f&is=6619a16f&hm=1a5ab7cfac4e14ece33654010805d403521b5d15ead072b13cc83d6c66131c6a&" />
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Operacionet CRUD gjithashtu i kemi krijuar edhe për Cities dhe Users, si dhe do i krijojmë për secilin model.
 
-## Learning Laravel
+<br><br><b>Testimi i ORM</b><br>
+Testimi i funksionalitetit ORM brenda projektit është thelbësor për të siguruar besueshmërinë dhe integritetin e operacioneve të bazës së të dhënave. Ne kemi kryer disa Unit Testing: Dy testime të funksionit sign up, njëri si përdorues i ri me të dhëna të reja, tjetri si përdorues i ri me email ekzistues. Pra, kur krijohet përdorues i ri status code i response-it pritet të jetë 201. Kur emaili ekziston në databazë, pritet të kthehet status code 409. Në të dy rastet kthehet status code i duhur.
+<br><img src="https://cdn.discordapp.com/attachments/1038101561735401524/1228434381404635137/image.png?ex=662c07ab&is=661992ab&hm=21635302bbc9c249adc4da31bdd1b2dcf515d478a2be83e1b804974066d36497&" />
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Testimi i filtrimit të route-ve me anë të tri parametrave: qyteti fillestar, qyteti i destinacionit dhe data. Siç edhe pritet, ky funksion kthen status code 200.
+<br><img src="https://cdn.discordapp.com/attachments/1038101561735401524/1228435160173645854/image.png?ex=662c0865&is=66199365&hm=5d5b4f7c0ea3072c615e53e85f5d3872534a7060ba0b4f453f24cf44ca0a812a&" />
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
-
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-## Laravel Sponsors
-
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
-
-### Premium Partners
-
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
-
-## Contributing
-
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
-
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Testimi i storeCity, updateCity, dhe getAllCities. storeCity supozohet të kthejë përgjigje me status code 201. updateCity një shembull me një id joekzistuese ku kthen response me status code 404. Dhe fare në fund, testimi i getAllCities për marrjen e qyteteve ekzistuese.
+<br><img src="https://cdn.discordapp.com/attachments/1038101561735401524/1228439326615015516/image.png?ex=662c0c46&is=66199746&hm=f137fe2feb73fd351fd3cadd8e98853e7d1f027793c589bf1df0c0dc9be7055c&" />
