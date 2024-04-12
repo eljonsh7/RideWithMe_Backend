@@ -63,7 +63,7 @@ class UserController extends Controller
         try {
             $user = User::where('email', $request->email)->first();
             if ($user) {
-                return response()->json(['message' => 'A user with this email already exists.'], 401);
+                return response()->json(['message' => 'A user with this email already exists.'], 409);
             } else {
                 $user = new User();
 

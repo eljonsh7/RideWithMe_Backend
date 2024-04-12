@@ -8,7 +8,7 @@ use Exception;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 
-class LocationController extends Controller
+class CityController extends Controller
 {
     public function storeCity(Request $request)
     {
