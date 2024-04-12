@@ -120,4 +120,13 @@ class UserController extends Controller
             return response()->json(['message' => 'An error occurred: ' . $e->getMessage()], 500);
         }
     }
+
+    public function deleteUser($userId) {
+        $user = User::findOrFail($userId);
+        if($user){
+            $user->delete();
+            return response()->json(['message'=>'User deleted successfully.'],200);
+        }
+        return response()->json(['message'=>'User not found.'],404);
+    }
 }

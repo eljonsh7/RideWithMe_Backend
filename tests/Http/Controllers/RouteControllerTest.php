@@ -20,7 +20,7 @@ class RouteControllerTest extends \Tests\TestCase
         $this->controller = $app->make(RouteController::class);
     }
 
-    public function testSignup()
+    public function testSearchRoute()
     {
         $request = new Request([
             'cityFromId' => '1',
