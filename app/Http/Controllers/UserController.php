@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Ban;
 use App\Models\User;
+use App\Models\Report;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
@@ -89,13 +90,29 @@ class UserController extends Controller
     {
         try {
             $users = User::get();
+
+            foreach ($users as $user) {
+                $isBanned = false;
+                $ban = Ban::where('user_id', $user->id)->first();
+                if ($ban) {
+                    $now = now();
+                    if ($ban->date_until > $now) {
+                        $isBanned = true;
+                    }
+                }
+                $user->is_banned = $isBanned;
+
+                $reportsCount = Report::where('reported_user_id', $user->id)->count();
+                $user->reports_number = $reportsCount;
+            }
+
             return response()->json(['users' => $users], 200);
-        }catch (Exception $e){
+        } catch (Exception $e) {
             return response()->json(['message' => 'An error occurred.', 'error' => $e->getMessage()], 500);
         }
     }
 
-    public function updateUser(Request $request,$id)
+    public function update(Request $request, $userId)
     {
         try {
             $request->validate([
@@ -105,7 +122,7 @@ class UserController extends Controller
                 'email' => 'nullable|string'
             ]);
 
-            $user = User::findOrFail($id);
+            $user = User::findOrFail($userId);
 
             $fillableFields = ['first_name', 'last_name','role','email'];
             foreach ($fillableFields as $field) {
@@ -121,12 +138,41 @@ class UserController extends Controller
         }
     }
 
-    public function deleteUser($userId) {
+    public function delete($userId) {
         $user = User::findOrFail($userId);
         if($user){
             $user->delete();
             return response()->json(['message'=>'User deleted successfully.'],200);
         }
         return response()->json(['message'=>'User not found.'],404);
+    }
+
+    public function ban(Request $request, $userId) {
+        $user = User::findOrFail($userId);
+        if($user){
+            $request->validate([
+                'date_until' => 'nullable|string',
+            ]);
+
+            $ban = new Ban();
+            $ban->id = Str::uuid();
+            $ban->user_id = $request->userId;
+            $ban->date_until = $request->date_until;
+
+            $ban->save();
+
+            return response()->json(['message'=>'User banned successfully.'],200);
+        }
+        return response()->json(['message'=>'User not found.'],404);
+    }
+
+    public function removeBan($userId) {
+        $ban = Ban::where('user_id', $userId);
+        if($ban){
+            $ban->delete();
+
+            return response()->json(['message'=>'User unbanned successfully.'],200);
+        }
+        return response()->json(['message'=>'Ban not found.'],404);
     }
 }

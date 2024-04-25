@@ -9,12 +9,12 @@ use Illuminate\Http\Request;
 
 class LocationController extends Controller
 {
-    public function storeLocation(Request $request)
+    public function store(Request $request)
     {
         $request->validate([
             'cityId' => 'required|string',
             'name' => 'required|string',
-            'googleMapsLink' => 'string'
+            'googleMapsLink' => 'nullable|string'
         ]);
 
         try {
@@ -38,7 +38,7 @@ class LocationController extends Controller
 
     }
 
-    public function deleteLocation($locationId){
+    public function delete($locationId){
         $location = Location::findOrFail($locationId);
         if($location){
             $location->delete();
@@ -47,17 +47,18 @@ class LocationController extends Controller
         return response()->json(['message'=>'Location not found.'],404);
     }
 
-    public function getAllLocations()
+    public function getAllLocations($cityId)
     {
         try {
-            $locations = Location::get();
+            $locations = Location::where('city_id', $cityId)->get();
             return response()->json(['locations' => $locations], 200);
-        }catch (Exception $e){
+        } catch (Exception $e) {
             return response()->json(['message' => 'An error occurred.', 'error' => $e->getMessage()], 500);
         }
     }
 
-    public function updateLocation(Request $request,$id)
+
+    public function update(Request $request,$id)
     {
         try {
             $request->validate([

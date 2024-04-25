@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CityController;
+use App\Http\Controllers\CarController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\RouteController;
 use App\Http\Controllers\UserController;
@@ -24,18 +25,25 @@ Route::post('v1/signup', [UserController::class, 'signup']);
 //Middleware routes
 Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
     Route::get('users/get', [UserController::class, 'getAllUsers']);
-    Route::put('users/update/{id}', [UserController::class, 'updateUser']);
-    Route::delete('users/delete/{userId}', [UserController::class, 'deleteUser']);
+    Route::put('users/update/{userId}', [UserController::class, 'update']);
+    Route::delete('users/delete/{userId}', [UserController::class, 'delete']);
+    Route::post('users/ban/{userId}', [UserController::class, 'ban']);
+    Route::delete('users/ban/remove/{userId}', [UserController::class, 'removeBan']);
 
-    Route::post('cities/store', [CityController::class, 'storeCity']);
-    Route::delete('cities/delete/{cityId}', [CityController::class, 'deleteCity']);
+    Route::post('cities/store', [CityController::class, 'store']);
+    Route::delete('cities/delete/{cityId}', [CityController::class, 'delete']);
     Route::get('cities/get', [CityController::class, 'getAllCities']);
-    Route::put('cities/update/{id}', [CityController::class, 'updateCity']);
+    Route::put('cities/update/{id}', [CityController::class, 'update']);
 
-    Route::post('locations/store', [LocationController::class, 'storeLocation']);
-    Route::delete('locations/delete/{locationId}', [LocationController::class, 'deleteLocation']);
-    Route::get('locations/get', [LocationController::class, 'getAllLocations']);
-    Route::put('locations/update/{id}', [LocationController::class, 'updateLocation']);
+    Route::post('locations/store', [LocationController::class, 'store']);
+    Route::delete('locations/delete/{locationId}', [LocationController::class, 'delete']);
+    Route::get('locations/get/{cityId}', [LocationController::class, 'getAllLocations']);
+    Route::put('locations/update/{id}', [LocationController::class, 'update']);
+
+    Route::post('cars/store', [CarController::class, 'store']);
+    Route::delete('cars/delete/{carId}', [CarController::class, 'delete']);
+    Route::get('cars/get', [CarController::class, 'getAllCars']);
+    Route::put('cars/update/{id}', [CarController::class, 'update']);
 
     Route::get('/routes/get', [RouteController::class,'index']);
     Route::get('/routes/search', [RouteController::class,'search']);
