@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 
 class CityController extends Controller
 {
-    public function storeCity(Request $request)
+    public function store(Request $request)
     {
         $request->validate([
             'name' => 'required|string',
@@ -37,7 +37,7 @@ class CityController extends Controller
 
     }
 
-    public function deleteCity($cityId){
+    public function delete($cityId){
         $city = City::findOrFail($cityId);
         if($city){
             $city->delete();
@@ -57,7 +57,7 @@ class CityController extends Controller
         }
     }
 
-    public function updateCity(Request $request,$id)
+    public function update(Request $request,$id)
     {
         try {
             $request->validate([
