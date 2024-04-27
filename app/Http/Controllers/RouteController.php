@@ -11,10 +11,29 @@ use App\Http\Controllers\CityController;
 use App\Http\Controllers\UserController;
 class RouteController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $routes = Route::paginate(9);
-        return response()->json($routes);
+        $currentDateTime = Carbon::now()->format('Y-m-d H:i:s');
+        $query = Route::query()->where('datetime', '>', $currentDateTime);
+
+        $routes = $query->paginate($request->pageSize, ['*'], 'page', $request->page);
+
+        $locationController = new LocationController();
+        $cityController = new CityController();
+        $UserController = new UserController();
+
+        $routes->getCollection()->transform(function ($route) use ($UserController,$locationController,$cityController) {
+            $route->city_from = $cityController->getCity($route->city_from_id)->getData()->data;
+            $route->city_to = $cityController->getCity($route->city_to_id)->getData()->data;
+            unset($route->city_from_id);
+            unset($route->city_to_id);
+            $route->driver = $UserController->getUser($route->driver);
+            unset($route->driver_id);
+            $route->location = $locationController->getLocation($route->location_id)->getData()->data;
+            unset($route->location_id);
+            return $route;
+        });
+        return response()->json($routes,200);
     }
     public function search(Request $request){
         $request->validate([
