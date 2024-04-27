@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Route;
+use Illuminate\Support\Carbon;
 
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\CityController;
@@ -28,10 +29,23 @@ class RouteController extends Controller
         // Check if 'datetime' parameter exists and validate it if present
         if ($request->has('datetime')) {
             $request->validate([
-                'datetime' => 'required|date_format:Y-m-d H:i:s',
+                'datetime' => 'required|date_format:Y-m-d H:i',
             ]);
-            // Update the query to filter by datetime
-            $query->where('datetime', '=', $request->datetime);
+            $datetime = date('Y-m-d H:i', strtotime($request->datetime));
+
+            if($request->timeRange){
+                $date = date('Y-m-d', strtotime($datetime));
+                $hour = date('H', strtotime($datetime));
+                $startTime = $hour . ':00:00';
+                $endTime = ($hour + 1) . ':00:00';
+                $query->whereBetween('datetime', ["$date $startTime", "$date $endTime"]);
+            }else{
+                // Update the query to filter by datetime
+                $query->whereRaw("DATE_FORMAT(datetime, '%Y-%m-%d %H:%i') = '$datetime'");
+            }
+        }else {
+            $currentDateTime = Carbon::now()->format('Y-m-d H:i:s');
+            $query->where('datetime', '>', $currentDateTime);
         }
 
         $locationController = new LocationController();
