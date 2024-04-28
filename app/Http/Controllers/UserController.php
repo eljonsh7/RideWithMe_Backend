@@ -175,4 +175,21 @@ class UserController extends Controller
         }
         return response()->json(['message'=>'Ban not found.'],404);
     }
+
+    public function getUser($id)
+    {
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User not found'
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $user
+        ], 200);
+    }
 }

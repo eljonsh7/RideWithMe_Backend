@@ -80,4 +80,20 @@ class CityController extends Controller
             return response()->json(['message' => 'An error occurred: ' . $e->getMessage()], 404);
         }
     }
+    public function getCity($id)
+    {
+        $city = City::find($id);
+
+        if (!$city) {
+            return response()->json([
+                'success' => false,
+                'message' => 'City not found'
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $city
+        ], 200);
+    }
 }

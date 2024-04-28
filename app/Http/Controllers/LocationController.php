@@ -57,6 +57,23 @@ class LocationController extends Controller
         }
     }
 
+    public function getLocation($id)
+    {
+        $location = Location::find($id);
+
+        if (!$location) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Location not found'
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $location
+        ], 200);
+    }
+
 
     public function update(Request $request,$id)
     {
