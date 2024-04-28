@@ -154,10 +154,12 @@ class UserController extends Controller
                 'date_until' => 'nullable|string',
             ]);
 
+            $dateUntil = $request->has('date_until') ? $request->date_until : Carbon::now()->addDays(30);
+
             $ban = new Ban();
             $ban->id = Str::uuid();
             $ban->user_id = $request->userId;
-            $ban->date_until = $request->date_until;
+            $ban->date_until = $dateUntil;
 
             $ban->save();
 

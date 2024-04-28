@@ -1,8 +1,9 @@
 <?php
 
-use App\Http\Controllers\CityController;
 use App\Http\Controllers\CarController;
+use App\Http\Controllers\CityController;
 use App\Http\Controllers\LocationController;
+use App\Http\Controllers\MediaController;
 use App\Http\Controllers\RouteController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -29,6 +30,8 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
     Route::delete('users/delete/{userId}', [UserController::class, 'delete']);
     Route::post('users/ban/{userId}', [UserController::class, 'ban']);
     Route::delete('users/ban/remove/{userId}', [UserController::class, 'removeBan']);
+
+    Route::post('media/store', [MediaController::class, 'store']);
 
     Route::post('cities/store', [CityController::class, 'store']);
     Route::delete('cities/delete/{cityId}', [CityController::class, 'delete']);
