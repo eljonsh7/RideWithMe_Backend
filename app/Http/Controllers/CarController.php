@@ -9,16 +9,14 @@ use Illuminate\Http\Request;
 
 class CarController extends Controller
 {
-    use Illuminate\Support\Facades\Storage;
-
     public function store(Request $request)
     {
         $request->validate([
             'brand' => 'required|string',
             'serie' => 'required|string',
             'type' => 'required|string',
-            'thumbnail' => 'nullable|image',
-            'seatsNumber' => 'required|string',
+            'seats_number' => 'required',
+            'thumbnail' => 'required|string',
         ]);
 
         try {
@@ -36,13 +34,8 @@ class CarController extends Controller
             $car->brand = $request->brand;
             $car->serie = $request->serie;
             $car->type = $request->type;
-            $car->seats_number = $request->seatsNumber;
-
-            if ($request->hasFile('thumbnail')) {
-                $thumbnailPath = $request->file('thumbnail')->store('thumbnails', 'public');
-                $car->thumbnail = $thumbnailPath;
-            }
-
+            $car->seats_number = $request->seats_number;
+            $car->thumbnail = $request->thumbnail;
             $car->save();
 
             return response()->json(['message' => 'Car created successfully', 'car' => $car], 201);
@@ -51,14 +44,23 @@ class CarController extends Controller
         }
     }
 
-    public function delete($carId){
+    public function delete($carId)
+    {
         $car = Car::findOrFail($carId);
-        if($car){
+        if ($car) {
+            if ($car->thumbnail) {
+                $filePath = public_path('storage/' . $car->thumbnail);
+                if (file_exists($filePath)) {
+                    unlink($filePath);
+                }
+            }
             $car->delete();
-            return response()->json(['message'=>'Car deleted successfully.'],200);
+            return response()->json(['message'=>'Car deleted successfully.'], 200);
         }
-        return response()->json(['message'=>'Car not found.'],404);
+        return response()->json(['message'=>'Car not found.'], 404);
     }
+
+
 
     public function getAllCars()
     {
@@ -78,22 +80,24 @@ class CarController extends Controller
                 'brand' => 'nullable|string',
                 'serie' => 'nullable|string',
                 'type' => 'nullable|string',
-                'thumbnail' => 'nullable|image',
-                'seatsNumber' => 'nullable|string',
+                'thumbnail' => 'nullable|string',
+                'seats_number' => 'nullable',
             ]);
 
-            $car = Location::findOrFail($id);
+            $car = Car::findOrFail($id);
 
-            $fillableFields = ['brand', 'serie', 'type', 'seats_number',];
+            if ($request->has('thumbnail') && $car->thumbnail) {
+                $filePath = public_path('storage/' . $car->thumbnail);
+                if (file_exists($filePath)) {
+                    unlink($filePath);
+                }
+            }
+
+            $fillableFields = ['brand', 'serie', 'type', 'seats_number', 'thumbnail'];
             foreach ($fillableFields as $field) {
                 if ($request->filled($field)) {
                     $car->$field = $request->$field;
                 }
-            }
-
-            if ($request->filled('thumbnail')) {
-                $thumbnailPath = $request->file('thumbnail')->store('thumbnails', 'public');
-                $car->thumbnail = $thumbnailPath;
             }
 
             $car->save();
