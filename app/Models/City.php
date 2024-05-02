@@ -2,19 +2,15 @@
 
 namespace App\Models;
 
-use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class User extends Authenticatable
+class City extends Model
 {
-    use HasFactory,HasApiTokens;
-
+    use HasFactory;
     protected $primaryKey = 'id';
     public $incrementing = false;
-
     protected $fillable = [
-        'id', 'first_name', 'last_name', 'email', 'password', 'role',
+        'id', 'name', 'country',
     ];
 }

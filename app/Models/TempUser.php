@@ -2,12 +2,11 @@
 
 namespace App\Models;
 
-use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
+class TempUser extends Model
 {
     use HasFactory,HasApiTokens;
 
@@ -15,6 +14,6 @@ class User extends Authenticatable
     public $incrementing = false;
 
     protected $fillable = [
-        'id', 'first_name', 'last_name', 'email', 'password', 'role',
+        'id', 'first_name', 'last_name', 'email', 'password', 'role','token'
     ];
 }

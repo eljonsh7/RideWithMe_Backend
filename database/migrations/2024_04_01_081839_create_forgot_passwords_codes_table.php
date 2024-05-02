@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -11,9 +12,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('password_reset_tokens', function (Blueprint $table) {
+        Schema::create('forgot_passwords_codes', function (Blueprint $table) {
+            $table->uuid();
             $table->string('email')->primary();
-            $table->string('token');
+            $table->string('code');
+            $table->timestamp('expiration_time')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('created_at')->nullable();
         });
     }
@@ -23,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('password_reset_tokens');
+        Schema::dropIfExists('forgot_passwords_codes');
     }
 };
