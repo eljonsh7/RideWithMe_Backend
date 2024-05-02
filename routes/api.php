@@ -23,8 +23,12 @@ use Illuminate\Support\Facades\Route;
 Route::post('v1/login', [UserController::class, 'login']);
 Route::post('v1/signup', [UserController::class, 'signup']);
 
+Route::get('v1/routes/get', [RouteController::class,'index']);
+Route::get('v1/cities/get', [CityController::class, 'getAllCities']);
+
 //Middleware routes
 Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
+    Route::get('users/getByToken', [UserController::class, 'getUserByToken']);
     Route::get('users/get', [UserController::class, 'getAllUsers']);
     Route::put('users/update/{userId}', [UserController::class, 'update']);
     Route::delete('users/delete/{userId}', [UserController::class, 'delete']);
@@ -35,7 +39,6 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
 
     Route::post('cities/store', [CityController::class, 'store']);
     Route::delete('cities/delete/{cityId}', [CityController::class, 'delete']);
-    Route::get('cities/get', [CityController::class, 'getAllCities']);
     Route::put('cities/update/{id}', [CityController::class, 'update']);
 
     Route::post('locations/store', [LocationController::class, 'store']);
@@ -48,10 +51,10 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
     Route::get('cars/get', [CarController::class, 'getAllCars']);
     Route::put('cars/update/{id}', [CarController::class, 'update']);
 
-    Route::get('routes/get', [RouteController::class,'index']);
     Route::post('routes/search', [RouteController::class,'search']);
     Route::post('routes/add', [RouteController::class, 'addRoute']);
     Route::delete('routes/delete/{id}', [RouteController::class, 'deleteRoute']);
     Route::get('routes/{id}', [RouteController::class, 'getRoute']);
     Route::get('routes/user/{id}', [RouteController::class, 'getUserRoutes']);
 });
+

@@ -10,6 +10,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Auth;
 use Ramsey\Uuid\Uuid;
 
 class UserController extends Controller
@@ -193,5 +194,11 @@ class UserController extends Controller
             'success' => true,
             'data' => $user
         ], 200);
+    }
+
+    public function getUserByToken()
+    {
+        $user = Auth::user();
+        return response()->json($user);
     }
 }
