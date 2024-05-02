@@ -9,6 +9,7 @@ class ConversationMessage extends Model
 {
     use HasFactory;
     protected $primaryKey = 'id';
+    public $incrementing = false;
 
     protected $fillable = [
         'id', 'conversation_id', 'message_id',

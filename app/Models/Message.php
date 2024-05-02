@@ -9,6 +9,7 @@ class Message extends Model
 {
     use HasFactory;
     protected $primaryKey = 'id';
+    public $incrementing = false;
 
     protected $fillable = [
         'id', 'user_id', 'content', 'type',
@@ -16,5 +17,10 @@ class Message extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function conversations()
+    {
+        return $this->belongsToMany(Conversation::class, 'conversation_messages');
     }
 }
