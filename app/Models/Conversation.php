@@ -21,10 +21,11 @@ class Conversation extends Model
 
     public function recipient()
     {
-        return $this->belongsTo(User::class, 'recipient_id');
+        return $this->morphTo();
     }
     public function messages()
     {
         return $this->belongsToMany(Message::class, 'conversation_messages');
     }
+
 }
