@@ -18,24 +18,34 @@ class RouteController extends Controller
 
         $routes = $query->paginate($request->pageSize, ['*'], 'page', $request->page);
 
+        $routes = $this->formatRoutes($routes);
+        return response()->json($routes,200);
+    }
+
+    private function formatRoutes($routes){
+        $routes->getCollection()->transform(function ($route) {
+            $this->formatRoute($route);
+            return $route;
+        });
+        return $routes;
+    }
+    private function formatRoute($route){
         $locationController = new LocationController();
         $cityController = new CityController();
         $UserController = new UserController();
 
-        $routes->getCollection()->transform(function ($route) use ($UserController,$locationController,$cityController) {
-            $route->city_from = $cityController->getCity($route->city_from_id)->getData()->data;
-            $route->city_to = $cityController->getCity($route->city_to_id)->getData()->data;
-            unset($route->city_from_id);
-            unset($route->city_to_id);
-            $route->driver = $UserController->getUser($route->driver);
-            unset($route->driver_id);
-            $route->location = $locationController->getLocation($route->location_id)->getData()->data;
-            unset($route->location_id);
-            return $route;
-        });
-        return response()->json($routes,200);
-    }
 
+        $route->city_from = $cityController->getCity($route->city_from_id)->getData()->data;
+        $route->city_to = $cityController->getCity($route->city_to_id)->getData()->data;
+        unset($route->city_from_id);
+        unset($route->city_to_id);
+        $route->driver = $UserController->getUser($route->driver);
+        unset($route->driver_id);
+        $route->location = $locationController->getLocation($route->location_id)->getData()->data;
+        unset($route->location_id);
+
+        return $route;
+    }
     public function search(Request $request){
         $request->validate([
             'cityFromId' => 'required',
@@ -63,26 +73,9 @@ class RouteController extends Controller
             $query->get();
         }
 
-        $locationController = new LocationController();
-        $cityController = new CityController();
-        $cityFrom = $cityController->getCity($request->cityFromId)->getData()->data;
-        $cityTo = $cityController->getCity($request->cityToId)->getData()->data;
-
         $routes = $query->paginate($request->pageSize, ['*'], 'page', $request->page);
 
-        $UserController = new UserController();
-
-        $routes->getCollection()->transform(function ($route) use ($cityFrom, $cityTo,$UserController,$locationController,$cityController) {
-            $route->city_from = $cityFrom;
-            $route->city_to = $cityTo;
-            unset($route->city_from_id);
-            unset($route->city_to_id);
-            $route->driver = $UserController->getUser($route->driver);
-            unset($route->driver_id);
-            $route->location = $locationController->getLocation($route->location_id)->getData()->data;
-            unset($route->location_id);
-            return $route;
-        });
+        $routes = $this->formatRoutes($routes);
 
         return response()->json($routes, 200);
     }
@@ -96,6 +89,7 @@ class RouteController extends Controller
             'location_id' => 'required|exists:locations,id',
             'datetime' => 'required|date_format:Y-m-d H:i:s',
             'passengers_number' => 'required|integer|min:1',
+            'price' => 'required'
         ]);
 
         $route = Route::create($request->all());
@@ -132,32 +126,16 @@ class RouteController extends Controller
                 'message' => 'Route not found'
             ], 404);
         }
+        $route = $this->formatRoute($route);
 
-        return response()->json([
-            'success' => true,
-            'data' => $route
-        ], 200);
+        return response()->json($route, 200);
     }
 
     public function getUserRoutes($driverId)
     {
         $routes = Route::where('driver_id', $driverId)->paginate(6);
 
-        $locationController = new LocationController();
-        $cityController = new CityController();
-        $UserController = new UserController();
-
-        $routes->getCollection()->transform(function ($route) use ($UserController,$locationController,$cityController) {
-            $route->city_from = $cityController->getCity($route->city_from_id)->getData()->data;
-            $route->city_to = $cityController->getCity($route->city_to_id)->getData()->data;
-            unset($route->city_from_id);
-            unset($route->city_to_id);
-            $route->driver = $UserController->getUser($route->driver);
-            unset($route->driver_id);
-            $route->location = $locationController->getLocation($route->location_id)->getData()->data;
-            unset($route->location_id);
-            return $route;
-        });
+        $routes = $this->formatRoutes($routes);
 
         return response()->json($routes, 200);
     }

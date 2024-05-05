@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CarController;
+use App\Http\Controllers\ChatController;
 use App\Http\Controllers\CityController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\MediaController;
@@ -56,5 +57,11 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
     Route::delete('routes/delete/{id}', [RouteController::class, 'deleteRoute']);
     Route::get('routes/{id}', [RouteController::class, 'getRoute']);
     Route::get('routes/user/{id}', [RouteController::class, 'getUserRoutes']);
+
+    Route::post('messages/send/{recipient}',[ChatController::class,'sendMessage']);
+    Route::get('messages/get/{recipient}/{type}',[ChatController::class,'getConversation']);
+    Route::get('messages/get/last',[ChatController::class,'getConversationsWithMessages']);
+    Route::put('messages/read/{recipient}',[ChatController::class,'markConversationAsRead']);
+    Route::delete('messages/delete/{recipient}',[ChatController::class,'deleteConversation']);
 });
 

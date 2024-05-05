@@ -11,18 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::disableForeignKeyConstraints();
-
-        Schema::create('conversations', function (Blueprint $table) {
+        Schema::create('group_members', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('sender_id')->constrained('users');
-            $table->foreignUuid('recipient_id')->constrained('users');
-            $table->string('type');
-            $table->integer('unread_messages');
+            $table->foreignUuid('group_id')->constrained('groups');
+            $table->foreignUuid('user_id')->constrained('users');
             $table->timestamps();
         });
-
-        Schema::enableForeignKeyConstraints();
     }
 
     /**
@@ -30,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('conversations');
+        Schema::dropIfExists('group_members');
     }
 };
