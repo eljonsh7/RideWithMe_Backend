@@ -5,6 +5,7 @@ use App\Http\Controllers\ChatController;
 use App\Http\Controllers\CityController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\MediaController;
+use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\RouteController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -57,6 +58,11 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
     Route::delete('routes/delete/{id}', [RouteController::class, 'deleteRoute']);
     Route::get('routes/{id}', [RouteController::class, 'getRoute']);
     Route::get('routes/user/{id}', [RouteController::class, 'getUserRoutes']);
+
+    Route::post('reservations/create/{route}',[ReservationController::class,'store']);
+    Route::put('reservations/update/{reservation}',[ReservationController::class,'update']);
+    Route::get('reservations/received',[ReservationController::class,'getReceivedRequests']);
+    Route::get('reservations/sent',[ReservationController::class,'getSentRequests']);
 
     Route::post('messages/send/{recipient}',[ChatController::class,'sendMessage']);
     Route::get('messages/get/{recipient}/{type}',[ChatController::class,'getConversation']);
