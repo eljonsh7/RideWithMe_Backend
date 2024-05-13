@@ -13,12 +13,17 @@ class ReservationController extends Controller
     {
         $user = auth()->user();
         try {
+            $reservations = Reservation::where('route_id',$route)->with('route')->get();
+            if(sizeof($reservations) == $reservations[0]->route->passengers_number){
+                return response()->json(['message' => 'No free seat.' ], 400);
+            }
             $reservation = Reservation::create([
                 'user_id' => $user->id,
                 'route_id' => $route,
                 'status' => 'requested'
             ]);
             return response()->json(['message' => 'Reservation requested.', 'reservation' => $reservation], 200);
+
         } catch (Exception $e) {
             return response()->json(['message' => 'An error occurred.', 'error' => $e->getMessage()], 500);
         }
