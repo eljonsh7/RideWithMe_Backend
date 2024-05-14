@@ -3,6 +3,7 @@
 use App\Http\Controllers\CarController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\CityController;
+use App\Http\Controllers\GroupChatController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\MediaController;
 use App\Http\Controllers\ReservationController;
@@ -69,5 +70,11 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
     Route::get('messages/get/last',[ChatController::class,'getConversationsWithMessages']);
     Route::put('messages/read/{recipient}',[ChatController::class,'markConversationAsRead']);
     Route::delete('messages/delete/{recipient}',[ChatController::class,'deleteConversation']);
+
+    Route::post('messages/group/store',[GroupChatController::class,'store']);
+    Route::post('messages/group/send/{group}',[GroupChatController::class,'sendMessageToGroup']);
+
+    Route::get('members/get/{group}',[GroupChatController::class,'retrieveAllGroupMembers']);
+
 });
 

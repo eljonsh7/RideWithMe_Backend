@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\CityController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\UserController;
+use App\Models\Conversation;
+use App\Models\Group;
 use Illuminate\Http\Request;
 use App\Models\Route;
 use Illuminate\Support\Carbon;
@@ -82,6 +84,7 @@ class RouteController extends Controller
 
     public function addRoute(Request $request)
     {
+        $user = auth()->user();
         $request->validate([
             'driver_id' => 'required|exists:users,id',
             'city_from_id' => 'required|exists:cities,id',
@@ -93,7 +96,7 @@ class RouteController extends Controller
         ]);
 
         $route = Route::create($request->all());
-
+        $this->addGroup($user,$route);
         return response()->json($route, 201);
     }
 
@@ -138,5 +141,19 @@ class RouteController extends Controller
         $routes = $this->formatRoutes($routes);
 
         return response()->json($routes, 200);
+    }
+
+    public function addGroup($user,$route)
+    {
+        $group = Group::create([
+            'route_id' => $route
+        ]);
+
+        Conversation::create([
+            'sender_id' => $user->id,
+            'recipient_id' => $group->id,
+            'unread_messages' => 0,
+            'type' => 'group'
+        ]);
     }
 }
