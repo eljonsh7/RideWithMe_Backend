@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\MessageEvent;
 use App\Models\Conversation;
 use App\Models\ConversationMessage;
 use App\Models\Group;
@@ -103,6 +104,15 @@ class GroupChatController extends Controller
                 'conversation_id' => $conversationOfOwner->id,
                 'message_id' => $message->id
             ]);
+
+            $groupMembers = Reservation::where('route_id', $groupObj->route_id)
+                ->where('status', 'accepted')
+                ->get();
+            broadcast(new MessageEvent($message,$groupObj->route->driver->id))->toOthers();
+            foreach ($groupMembers as $groupMember1){
+                broadcast(new MessageEvent($message, $groupMember1->user_id))->toOthers();
+            }
+
             return response()->json([
                 'message' => $message,
             ]);

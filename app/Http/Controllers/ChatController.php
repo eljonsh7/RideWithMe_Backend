@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\MessageEvent;
 use App\Models\Conversation;
 use App\Models\ConversationMessage;
 use App\Models\Group;
@@ -54,6 +55,9 @@ class ChatController extends Controller
         } else {
             $conversation2->increment('unread_messages');
         }
+
+        broadcast(new MessageEvent($message,$recipient))->toOthers();
+        broadcast(new MessageEvent($message, $authenticatedUserId))->toOthers();
 
         return response()->json([
             'message' => $message,

@@ -14,9 +14,12 @@ class ReservationController extends Controller
         $user = auth()->user();
         try {
             $reservations = Reservation::where('route_id',$route)->with('route')->get();
-            if(sizeof($reservations) == $reservations[0]->route->passengers_number){
-                return response()->json(['message' => 'No free seat.' ], 400);
+            if(sizeof($reservations)>0){
+                if(sizeof($reservations) == $reservations[0]->route->passengers_number){
+                    return response()->json(['message' => 'No free seat.' ], 400);
+                }
             }
+
             $reservation = Reservation::create([
                 'user_id' => $user->id,
                 'route_id' => $route,
