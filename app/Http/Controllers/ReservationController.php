@@ -19,7 +19,12 @@ class ReservationController extends Controller
                     return response()->json(['message' => 'No free seat.' ], 400);
                 }
             }
-
+            $reservation = Reservation::where('route_id',$route)
+                ->where('user_id', $user->id)
+                ->first();
+            if($reservation){
+                return response()->json(['message' => 'Reservation already requested.' ], 400);
+            }
             $reservation = Reservation::create([
                 'user_id' => $user->id,
                 'route_id' => $route,
