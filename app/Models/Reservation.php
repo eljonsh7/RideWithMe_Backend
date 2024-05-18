@@ -12,7 +12,7 @@ class Reservation extends Model
     protected $primaryKey = 'id';
 
     protected $fillable = [
-        'id', 'user_id', 'route_id', 'status',
+        'id', 'user_id', 'route_id', 'status', 'seat',
     ];
 
     public function user()

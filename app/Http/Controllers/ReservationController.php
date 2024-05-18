@@ -9,32 +9,24 @@ use Illuminate\Http\Request;
 class ReservationController extends Controller
 {
 
-    public function store($route)
+    public function store(Request $request)
     {
-        $user = auth()->user();
-        try {
-            $reservations = Reservation::where('route_id',$route)->with('route')->get();
-            if(sizeof($reservations)>0){
-                if(sizeof($reservations) == $reservations[0]->route->passengers_number){
-                    return response()->json(['message' => 'No free seat.' ], 400);
-                }
-            }
-            $reservation = Reservation::where('route_id',$route)
-                ->where('user_id', $user->id)
-                ->first();
-            if($reservation){
-                return response()->json(['message' => 'Reservation already requested.' ], 400);
-            }
-            $reservation = Reservation::create([
-                'user_id' => $user->id,
-                'route_id' => $route,
-                'status' => 'requested'
-            ]);
-            return response()->json(['message' => 'Reservation requested.', 'reservation' => $reservation], 200);
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'route_id' => 'required|exists:routes,id',
+            'status' => 'required|string',
+            'seat' => 'required|integer',
+        ]);
 
-        } catch (Exception $e) {
-            return response()->json(['message' => 'An error occurred.', 'error' => $e->getMessage()], 500);
+        $reservation = Reservation::where('user_id', $request->user_id)
+        ->where('route_id', $request->route_id)
+        ->exists();
+
+        if($reservation){
+            return response()->json(['message' => 'Reservation already exists!'], 409);
         }
+        $reservation = Reservation::create($request->all());
+        return response()->json($reservation, 201);
     }
 
     public function update(Request $request, $reservation)
@@ -83,5 +75,6 @@ class ReservationController extends Controller
             return response()->json(['message' => 'An error occurred.', 'error' => $e->getMessage()], 500);
         }
     }
+
 
 }

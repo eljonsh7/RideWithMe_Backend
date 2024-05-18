@@ -60,7 +60,7 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
     Route::get('routes/{id}', [RouteController::class, 'getRoute']);
     Route::get('routes/user/{id}', [RouteController::class, 'getUserRoutes']);
 
-    Route::post('reservations/create/{route}',[ReservationController::class,'store']);
+    Route::post('reservations/create',[ReservationController::class,'store']);
     Route::put('reservations/update/{reservation}',[ReservationController::class,'update']);
     Route::get('reservations/received',[ReservationController::class,'getReceivedRequests']);
     Route::get('reservations/sent',[ReservationController::class,'getSentRequests']);

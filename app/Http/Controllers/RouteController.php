@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\CityController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\ReservationController;
 use App\Models\Conversation;
 use App\Models\Group;
 use Illuminate\Http\Request;
@@ -32,20 +33,16 @@ class RouteController extends Controller
         return $routes;
     }
     private function formatRoute($route){
-        $locationController = new LocationController();
-        $cityController = new CityController();
-        $UserController = new UserController();
-
-
-        $route->city_from = $cityController->getCity($route->city_from_id)->getData()->data;
-        $route->city_to = $cityController->getCity($route->city_to_id)->getData()->data;
+        $route->load('cityFrom', 'cityTo', 'driver', 'location');
+    
+        $route->city_from = $route->cityFrom;
+        $route->city_to = $route->cityTo;
+    
         unset($route->city_from_id);
         unset($route->city_to_id);
-        $route->driver = $UserController->getUser($route->driver);
         unset($route->driver_id);
-        $route->location = $locationController->getLocation($route->location_id)->getData()->data;
         unset($route->location_id);
-
+    
         return $route;
     }
     public function search(Request $request){
@@ -121,6 +118,7 @@ class RouteController extends Controller
 
     public function getRoute($id)
     {
+        $user = auth()->user();
         $route = Route::find($id);
 
         if (!$route) {
@@ -131,6 +129,15 @@ class RouteController extends Controller
         }
         $route = $this->formatRoute($route);
 
+        $reservations = Route::with(["reservations"=> function($query) {
+            $query->where('status', 'Approved');
+        }])->find($route->id)->reservations;
+        
+        $route->takenSeats = $reservations->pluck('seat')->toArray();
+        $reservFromUser = Route::with(['reservations' => function ($query) use ($user) {
+            $query->where('user_id', $user->id);
+        }])->find($route->id)->reservations->first();
+        $route->takenSeatByUser = $reservFromUser ? ['seat' =>$reservFromUser->seat,'status'=>$reservFromUser->status]:null;
         return response()->json($route, 200);
     }
 
