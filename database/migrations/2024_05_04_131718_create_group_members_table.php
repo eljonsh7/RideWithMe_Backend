@@ -11,26 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::disableForeignKeyConstraints();
-
-        Schema::create('reservations', function (Blueprint $table) {
+        Schema::create('group_members', function (Blueprint $table) {
             $table->uuid('id')->primary();
+            $table->foreignUuid('group_id')->constrained('groups');
             $table->foreignUuid('user_id')->constrained('users');
-            $table->foreignUuid('route_id')->constrained('routes');
-            $table->string('status');
-            $table->integer('seat');
             $table->timestamps();
         });
-
-        Schema::enableForeignKeyConstraints();
     }
 
     /**
      * Reverse the migrations.
      */
-
     public function down(): void
     {
-        Schema::dropIfExists('reservations');
+        Schema::dropIfExists('group_members');
     }
 };

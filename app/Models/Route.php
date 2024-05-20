@@ -12,7 +12,7 @@ class Route extends Model
     protected $primaryKey = 'id';
 
     protected $fillable = [
-        'id', 'driver_id', 'city_from_id', 'city_to_id', 'location_id', 'datetime', 'passengers_number','created_at',
+        'id', 'driver_id', 'city_from_id', 'city_to_id', 'location_id', 'datetime', 'passengers_number','price','created_at',
         'updated_at',
     ];
 
@@ -34,5 +34,10 @@ class Route extends Model
     public function location()
     {
         return $this->belongsTo(Location::class, 'location_id');
+    }
+
+    public function reservations()
+    {
+        return $this->hasMany(Reservation::class);
     }
 }

@@ -16,8 +16,9 @@ return new class extends Migration
         Schema::create('conversations', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('sender_id')->constrained('users');
-            $table->uuid('recipient_id');
+            $table->foreignUuid('recipient_id')->constrained('users');
             $table->string('type');
+            $table->integer('unread_messages');
             $table->timestamps();
         });
 
