@@ -7,8 +7,60 @@ use Exception;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 
+
+/**
+ * @OA\Schema(
+ *     schema="Location",
+ *     type="object",
+ *     title="Location",
+ *     description="Location model",
+ *     required={"id", "city_id", "name","google_maps_link"},
+ *     @OA\Property(property="id", type="string", format="uuid", description="Location ID"),
+ *     @OA\Property(property="city_id", type="string", format="uuid", description="ID of the city"),
+ *     @OA\Property(property="name", type="string", description="Name of the location"),
+ *     @OA\Property(property="google_maps_link", type="string", nullable=true, description="Google Maps link for the location")
+ * )
+ */
 class LocationController extends Controller
 {
+    /**
+     * @OA\Post(
+     *     path="/v1/locations/store",
+     *     tags={"Location"},
+     *     summary="Create location",
+     *     description="Create a new location",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"cityId", "name"},
+     *             @OA\Property(property="cityId", type="string", description="ID of the city"),
+     *             @OA\Property(property="name", type="string", description="Name of the location"),
+     *             @OA\Property(property="googleMapsLink", type="string", description="Google Maps link for the location")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Location created successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Location created successfully"),
+     *             @OA\Property(property="location", ref="#/components/schemas/Location")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="A location with this name already exists"
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation error"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="An error occurred"
+     *     )
+     * )
+     */
     public function store(Request $request)
     {
         $request->validate([
@@ -38,6 +90,34 @@ class LocationController extends Controller
 
     }
 
+    /**
+     * @OA\Delete(
+     *     path="/v1/locations/delete/{locationId}",
+     *     tags={"Location"},
+     *     summary="Delete location",
+     *     description="Delete a location",
+     *     @OA\Parameter(
+     *         name="locationId",
+     *         in="path",
+     *         required=true,
+     *         description="ID of the location to delete",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Location deleted successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Location deleted successfully")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Location not found"
+     *     )
+     * )
+     */
+
     public function delete($locationId){
         $location = Location::findOrFail($locationId);
         if($location){
@@ -46,6 +126,34 @@ class LocationController extends Controller
         }
         return response()->json(['message'=>'Location not found.'],404);
     }
+
+    /**
+     * @OA\Get(
+     *     path="/v1/locations/get/{cityId}",
+     *     tags={"Location"},
+     *     summary="Get all locations",
+     *     description="Get all locations for a specific city",
+     *     @OA\Parameter(
+     *         name="cityId",
+     *         in="path",
+     *         required=true,
+     *         description="ID of the city",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Locations fetched successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="locations", type="array", @OA\Items(ref="#/components/schemas/Location"))
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="An error occurred"
+     *     )
+     * )
+     */
 
     public function getAllLocations($cityId)
     {
@@ -56,6 +164,31 @@ class LocationController extends Controller
             return response()->json(['message' => 'An error occurred.', 'error' => $e->getMessage()], 500);
         }
     }
+
+    /**
+     * @OA\Get(
+     *     path="/v1/locations/{id}",
+     *     tags={"Location"},
+     *     summary="Get location",
+     *     description="Get a location by ID",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID of the location",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Location fetched successfully",
+     *         @OA\JsonContent(ref="#/components/schemas/Location")
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Location not found"
+     *     )
+     * )
+     */
 
     public function getLocation($id)
     {
@@ -75,6 +208,50 @@ class LocationController extends Controller
     }
 
 
+    /**
+     * @OA\Put(
+     *     path="/v1/locations/update/{id}",
+     *     tags={"Location"},
+     *     summary="Update location",
+     *     description="Update a location by ID",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID of the location",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"name"},
+     *             @OA\Property(property="name", type="string", description="Name of the location"),
+     *             @OA\Property(property="googleMapsLink", type="string", description="Google Maps link for the location")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Location updated successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="Location updated successfully"),
+     *             @OA\Property(property="location", ref="#/components/schemas/Location")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Location not found"
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation error"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="An error occurred"
+     *     )
+     * )
+     */
     public function update(Request $request,$id)
     {
         try {

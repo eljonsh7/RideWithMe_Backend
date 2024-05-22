@@ -6,6 +6,36 @@ use Illuminate\Http\Request;
 
 class MediaController extends Controller
 {
+    /**
+ * @OA\Post(
+ *     path="/v1/media/store",
+ *     summary="Store media file",
+ *     tags={"Media"},
+ *     @OA\RequestBody(
+ *         required=true,
+ *         description="Media file to store",
+ *         @OA\MediaType(
+ *             mediaType="multipart/form-data",
+ *             @OA\Schema(
+ *                 @OA\Property(
+ *                     property="media",
+ *                     type="string",
+ *                     format="binary",
+ *                     description="Media file to upload"
+ *                 )
+ *             )
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=201,
+ *         description="File stored successfully",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="message", type="string", example="File stored successfully"),
+ *             @OA\Property(property="file_path", type="string", example="/storage/cars/filename.ext")
+ *         )
+ *     )
+ * )
+ */
     public function store(Request $request)
     {
         $filePath = $request->file('media')->store('cars', 'public');

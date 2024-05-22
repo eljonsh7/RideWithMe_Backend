@@ -12,8 +12,59 @@ use Illuminate\Http\Request;
 use App\Models\Route;
 use Illuminate\Support\Carbon;
 
+/**
+ * @OA\Schema(
+ *     schema="Route",
+ *     type="object",
+ *     title="Route",
+ *     description="Route model",
+ *     required={"id", "driver_id", "city_from_id", "city_to_id", "location_id", "datetime", "passengers_number", "price"},
+ *     @OA\Property(property="id", type="string", format="uuid", description="Route ID"),
+ *     @OA\Property(property="driver_id", type="string", format="uuid", description="Driver ID"),
+ *     @OA\Property(property="city_from_id", type="string", format="uuid", description="City from ID"),
+ *     @OA\Property(property="city_to_id", type="string", format="uuid", description="City to ID"),
+ *     @OA\Property(property="location_id", type="string", format="uuid", description="Location ID"),
+ *     @OA\Property(property="datetime", type="string", format="date-time", description="Date and time of the route"),
+ *     @OA\Property(property="passengers_number", type="integer", description="Number of passengers"),
+ *     @OA\Property(property="price", type="number", format="float", description="Price")
+ * )
+ */
 class RouteController extends Controller
 {
+    /**
+     * @OA\Get(
+     *     path="/v1/routes/get",
+     *     tags={"Route"},
+     *     summary="Get routes",
+     *     description="Get a list of routes",
+     *     @OA\Parameter(
+     *         name="pageSize",
+     *         in="query",
+     *         description="Number of items per page",
+     *         required=false,
+     *         @OA\Schema(type="integer", format="int32")
+     *     ),
+     *     @OA\Parameter(
+     *         name="page",
+     *         in="query",
+     *         description="Page number",
+     *         required=false,
+     *         @OA\Schema(type="integer", format="int32")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/Route")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="An error occurred"
+     *     )
+     * )
+     */
     public function index(Request $request)
     {
         $currentDateTime = Carbon::now()->format('Y-m-d H:i:s');
@@ -45,6 +96,36 @@ class RouteController extends Controller
     
         return $route;
     }
+
+    /**
+     * @OA\Post(
+     *     path="/v1/routes/search",
+     *     tags={"Route"},
+     *     summary="Search routes",
+     *     description="Search for routes based on criteria",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             @OA\Property(property="cityFromId", type="integer", description="ID of the city from"),
+     *             @OA\Property(property="cityToId", type="integer", description="ID of the city to"),
+     *             @OA\Property(property="date", type="string", format="date", description="Date of the route (optional)"),
+     *             @OA\Property(property="time", type="string", format="time", description="Time of the route (optional)")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/Route")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="An error occurred"
+     *     )
+     * )
+     */
     public function search(Request $request){
         $request->validate([
             'cityFromId' => 'required',
@@ -79,6 +160,28 @@ class RouteController extends Controller
         return response()->json($routes, 200);
     }
 
+    /**
+     * @OA\Post(
+     *     path="/v1/routes/add",
+     *     tags={"Route"},
+     *     summary="Add route",
+     *     description="Add a new route",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/Route")
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Route added successfully",
+     *         @OA\JsonContent(ref="#/components/schemas/Route")
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Validation error"
+     *     )
+     * )
+     */
+
     public function addRoute(Request $request)
     {
         $user = auth()->user();
@@ -97,6 +200,33 @@ class RouteController extends Controller
         return response()->json($route, 201);
     }
 
+    /**
+     * @OA\Delete(
+     *     path="/v1/routes/delete/{id}",
+     *     tags={"Route"},
+     *     summary="Delete route",
+     *     description="Delete a route by ID",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the route to delete",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Route deleted successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Route deleted successfully")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Route not found"
+     *     )
+     * )
+     */
     public function deleteRoute($id)
     {
         $route = Route::find($id);
@@ -116,6 +246,30 @@ class RouteController extends Controller
         ], 200);
     }
 
+    /**
+     * @OA\Get(
+     *     path="/v1/routes/{id}",
+     *     tags={"Route"},
+     *     summary="Get route by ID",
+     *     description="Get route information by route ID",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="ID of the route",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/Route")
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Route not found"
+     *     )
+     * )
+     */
     public function getRoute($id)
     {
         $user = auth()->user();
@@ -141,6 +295,33 @@ class RouteController extends Controller
         return response()->json($route, 200);
     }
 
+    /**
+     * @OA\Get(
+     *     path="/v1/routes/user/{driverId}",
+     *     tags={"Route"},
+     *     summary="Get routes by driver ID",
+     *     description="Get routes of a user by driver ID",
+     *     @OA\Parameter(
+     *         name="driverId",
+     *         in="path",
+     *         description="ID of the driver",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/Route")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="No routes found for the driver"
+     *     )
+     * )
+     */
     public function getUserRoutes($driverId)
     {
         $routes = Route::where('driver_id', $driverId)->paginate(6);
