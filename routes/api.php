@@ -33,6 +33,7 @@ Route::get('v1/cities/get', [CityController::class, 'getAllCities']);
 Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
     Route::get('users/getByToken', [UserController::class, 'getUserByToken']);
     Route::get('users/get', [UserController::class, 'getAllUsers']);
+    Route::get('users/{id}', [UserController::class, 'getUser']);
     Route::put('users/update/{userId}', [UserController::class, 'update']);
     Route::delete('users/delete/{userId}', [UserController::class, 'delete']);
     Route::post('users/ban/{userId}', [UserController::class, 'ban']);
@@ -43,10 +44,12 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
     Route::post('cities/store', [CityController::class, 'store']);
     Route::delete('cities/delete/{cityId}', [CityController::class, 'delete']);
     Route::put('cities/update/{id}', [CityController::class, 'update']);
+    Route::post('cities/{id}', [CityController::class, 'getCity']);
 
     Route::post('locations/store', [LocationController::class, 'store']);
     Route::delete('locations/delete/{locationId}', [LocationController::class, 'delete']);
     Route::get('locations/get/{cityId}', [LocationController::class, 'getAllLocations']);
+    Route::get('locations/{locationId}', [LocationController::class, 'getLocation']);
     Route::put('locations/update/{id}', [LocationController::class, 'update']);
 
     Route::post('cars/store', [CarController::class, 'store']);
@@ -56,6 +59,7 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
 
     Route::post('routes/search', [RouteController::class,'search']);
     Route::post('routes/add', [RouteController::class, 'addRoute']);
+    Route::post('routes/get', [RouteController::class, 'index']);
     Route::delete('routes/delete/{id}', [RouteController::class, 'deleteRoute']);
     Route::get('routes/{id}', [RouteController::class, 'getRoute']);
     Route::get('routes/user/{id}', [RouteController::class, 'getUserRoutes']);

@@ -7,8 +7,68 @@ use Exception;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 
+/**
+ * @OA\Schema(
+ *      schema="Car",
+ *      type="object",
+ *      title="Car",
+ *      description="Car model",
+ *      required={"id", "brand", "serie", "type", "seats_number", "thumbnail"},
+ *      @OA\Property(property="id",format="uuid", type="string"),
+ *      @OA\Property(property="brand", type="string"),
+ *      @OA\Property(property="serie", type="string"),
+ *      @OA\Property(property="type", type="string"),
+ *      @OA\Property(property="seats_number", type="integer"),
+ *      @OA\Property(property="thumbnail", type="string"),
+ *)
+ */
 class CarController extends Controller
 {
+    /**
+     * @OA\Post(
+     *     path="/v1/cars/store",
+     *     summary="Create a new car",
+     *     tags={"Car"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="brand", type="string"),
+     *             @OA\Property(property="serie", type="string"),
+     *             @OA\Property(property="type", type="string"),
+     *             @OA\Property(property="seats_number", type="integer"),
+     *             @OA\Property(property="thumbnail", type="string")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Car created successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string"),
+     *             @OA\Property(property="car", ref="#/components/schemas/Car")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized or Car already exists",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string"),
+     *             @OA\Property(property="error", type="string")
+     *         )
+     *     )
+     * )
+     */
     public function store(Request $request)
     {
         $request->validate([
@@ -44,6 +104,36 @@ class CarController extends Controller
         }
     }
 
+    /**
+     * @OA\Delete(
+     *     path="/v1/cars/delete/{carId}",
+     *     summary="Delete a car by ID",
+     *     tags={"Car"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+     *         name="carId",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Car deleted successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Car not found",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string")
+     *         )
+     *     )
+     * )
+     */
     public function delete($carId)
     {
         $car = Car::findOrFail($carId);
@@ -60,7 +150,31 @@ class CarController extends Controller
         return response()->json(['message'=>'Car not found.'], 404);
     }
 
-
+    /**
+     * @OA\Get(
+     *     path="/v1/cars/get",
+     *     summary="Get all cars",
+     *     tags={"Car"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="List of cars",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/Car")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string"),
+     *             @OA\Property(property="error", type="string")
+     *         )
+     *     )
+     * )
+     */
 
     public function getAllCars()
     {
@@ -72,6 +186,57 @@ class CarController extends Controller
         }
     }
 
+    /**
+     * @OA\Put(
+     *     path="/v1/cars/update/{id}",
+     *     summary="Update a car by ID",
+     *     tags={"Car"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="brand", type="string", nullable=true),
+     *             @OA\Property(property="serie", type="string", nullable=true),
+     *             @OA\Property(property="type", type="string", nullable=true),
+     *             @OA\Property(property="seats_number", type="integer", nullable=true),
+     *             @OA\Property(property="thumbnail", type="string", nullable=true)
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Car updated successfully",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string"),
+     *             @OA\Property(property="car", ref="#/components/schemas/Car")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Car not found",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Internal server error",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string"),
+     *             @OA\Property(property="error", type="string")
+     *         )
+     *     )
+     * )
+     */
 
     public function update(Request $request, $id)
     {

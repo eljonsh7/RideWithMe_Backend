@@ -13,8 +13,61 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Ramsey\Uuid\Uuid;
 
+
+/**
+ * @OA\Schema(
+ *     schema="User",
+ *     type="object",
+ *     title="User",
+ *     description="User model",
+ *     required={"id", "first_name", "last_name", "email", "password", "role"},
+ *     @OA\Property(property="id", type="string", format="uuid", description="User ID"),
+ *     @OA\Property(property="first_name", type="string", description="First name of the user"),
+ *     @OA\Property(property="last_name", type="string", description="Last name of the user"),
+ *     @OA\Property(property="profile_picture", type="string", nullable=true, description="URL of the user's profile picture"),
+ *     @OA\Property(property="email", type="string", format="email", description="Email address of the user"),
+ *     @OA\Property(property="password", type="string", description="Password of the user"),
+ *     @OA\Property(property="role", type="string", description="Role of the user")
+ * )
+ */
+
 class UserController extends Controller
 {
+    /**
+     * @OA\Post(
+     *     path="/v1/login",
+     *     tags={"User"},
+     *     summary="Login user",
+     *     description="Login a user with email and password",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             @OA\Property(property="email", type="string"),
+     *             @OA\Property(property="password", type="string")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful login",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="token", type="string"),
+     *             @OA\Property(property="user", ref="#/components/schemas/User")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Invalid credentials"
+     *     ),
+     *     @OA\Response(
+     *         response=403,
+     *         description="User is banned"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="An error occurred"
+     *     )
+     * )
+     */
     public function login(Request $request)
     {
 
@@ -52,6 +105,41 @@ class UserController extends Controller
         return response()->json(['token' => $token, 'user' => $user]);
     }
 
+    /**
+     * @OA\Post(
+     *     path="/v1/signup",
+     *     tags={"User"},
+     *     summary="Signup user",
+     *     description="Signup a new user",
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             @OA\Property(property="firstName", type="string"),
+     *             @OA\Property(property="lastName", type="string"),
+     *             @OA\Property(property="role", type="string"),
+     *             @OA\Property(property="email", type="string"),
+     *             @OA\Property(property="password", type="string")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="User created successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string"),
+     *             @OA\Property(property="user", ref="#/components/schemas/User"),
+     *             @OA\Property(property="token", type="string")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=409,
+     *         description="A user with this email already exists"
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="An error occurred"
+     *     )
+     * )
+     */
     public function signup(Request $request)
     {
         $request->validate([
@@ -87,6 +175,25 @@ class UserController extends Controller
     }
 
 
+    /**
+     * @OA\Get(
+     *     path="/v1/users/get",
+     *     tags={"User"},
+     *     summary="Get all users",
+     *     description="Get a list of all users",
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="users", type="array", @OA\Items(ref="#/components/schemas/User"))
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="An error occurred"
+     *     )
+     * )
+     */
     public function getAllUsers()
     {
         try {
@@ -113,6 +220,41 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * @OA\Put(
+     *     path="/v1/users/update/{userId}",
+     *     tags={"User"},
+     *     summary="Update user",
+     *     description="Update user details",
+     *     @OA\Parameter(
+     *         name="userId",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\RequestBody(
+     *         required=false,
+     *         @OA\JsonContent(
+     *             @OA\Property(property="first_name", type="string"),
+     *             @OA\Property(property="last_name", type="string"),
+     *             @OA\Property(property="role", type="string"),
+     *             @OA\Property(property="email", type="string")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="User updated successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string"),
+     *             @OA\Property(property="user", ref="#/components/schemas/User")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="An error occurred"
+     *     )
+     * )
+     */
     public function update(Request $request, $userId)
     {
         try {
@@ -139,6 +281,32 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * @OA\Delete(
+     *     path="/v1/users/delete/{userId}",
+     *     tags={"User"},
+     *     summary="Delete user",
+     *     description="Delete a user by ID",
+     *     @OA\Parameter(
+     *         name="userId",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="User deleted successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="User not found"
+     *     )
+     * )
+     */
+
     public function delete($userId) {
         $user = User::findOrFail($userId);
         if($user){
@@ -147,6 +315,38 @@ class UserController extends Controller
         }
         return response()->json(['message'=>'User not found.'],404);
     }
+
+    /**
+     * @OA\Post(
+     *     path="/v1/users/ban/{userId}",
+     *     tags={"User"},
+     *     summary="Ban user",
+     *     description="Ban a user by ID",
+     *     @OA\Parameter(
+     *         name="userId",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             @OA\Property(property="date_until", type="string", description="Date until the user is banned")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="User banned successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="User not found"
+     *     )
+     * )
+     */
 
     public function ban(Request $request, $userId) {
         $user = User::findOrFail($userId);
@@ -169,6 +369,32 @@ class UserController extends Controller
         return response()->json(['message'=>'User not found.'],404);
     }
 
+    /**
+     * @OA\Delete(
+     *     path="/v1/users/ban/remove/{userId}",
+     *     tags={"User"},
+     *     summary="Remove ban from user",
+     *     description="Remove ban from a user by ID",
+     *     @OA\Parameter(
+     *         name="userId",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="User unbanned successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Ban not found"
+     *     )
+     * )
+     */
+
     public function removeBan($userId) {
         $ban = Ban::where('user_id', $userId);
         if($ban){
@@ -179,6 +405,37 @@ class UserController extends Controller
         return response()->json(['message'=>'Ban not found.'],404);
     }
 
+
+    /**
+     * @OA\Get(
+     *     path="/v1/users/{id}",
+     *     tags={"User"},
+     *     summary="Get user by ID",
+     *     description="Get user information by user ID",
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="data", ref="#/components/schemas/User")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="User not found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="User not found")
+     *         )
+     *     )
+     * )
+     */
     public function getUser($id)
     {
         $user = User::find($id);
@@ -195,6 +452,28 @@ class UserController extends Controller
             'data' => $user
         ], 200);
     }
+
+    /**
+     * @OA\Get(
+     *     path="/v1/users/getByToken",
+     *     tags={"User"},
+     *     summary="Get current user",
+     *     description="Get information of the current authenticated user",
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(ref="#/components/schemas/User")
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthenticated",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Unauthenticated")
+     *         )
+     *     )
+     * )
+     */
 
     public function getUserByToken()
     {
