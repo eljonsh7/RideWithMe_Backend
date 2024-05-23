@@ -106,9 +106,8 @@ class ChatController extends Controller
             unset($message->pivot);
 
             $sender = User::find($message->user_id);
-            $message->first_name = $sender->first_name;
-            $message->last_name = $sender->last_name;
-            $message->profile_picture = $sender->profile_picture;
+            unset($message->password);
+            $message->sender = $sender;
 
             return $message;
         });
@@ -133,15 +132,13 @@ class ChatController extends Controller
         $conversationData = $conversations->map(function ($conversation) use ($user) {
             $lastMessage = $conversation->messages->first();
             $otherParticipant = User::find($conversation->recipient_id);
+            unset($otherParticipant->password);
 
             return [
                 'id' => $conversation->id,
-                'sender_id' => $otherParticipant->id,
+                'sender' => $otherParticipant,
                 'type' => $conversation->type,
                 'unread_messages' => $conversation->unread_messages,
-                'first_name' => $otherParticipant->first_name,
-                'last_name' => $otherParticipant->last_name,
-                'profile_picture' => $otherParticipant->profile_picture,
                 'last_message' => $lastMessage ? [
                     'id' => $lastMessage->id,
                     'content' => $lastMessage->content,

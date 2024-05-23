@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Ban;
 use App\Models\User;
 use App\Models\Report;
+use App\Models\UserCar;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
@@ -70,7 +71,6 @@ class UserController extends Controller
      */
     public function login(Request $request)
     {
-
         $request->validate([
             'email' => 'required|string',
             'password' => 'required|string',
@@ -262,12 +262,12 @@ class UserController extends Controller
                 'first_name' => 'nullable|string',
                 'last_name' => 'nullable|string',
                 'role' => 'nullable|string',
-                'email' => 'nullable|string'
+                'profile_picture' => 'nullable|string'
             ]);
 
             $user = User::findOrFail($userId);
 
-            $fillableFields = ['first_name', 'last_name','role','email'];
+            $fillableFields = ['first_name', 'last_name', 'role', 'profile_picture'];
             foreach ($fillableFields as $field) {
                 if ($request->filled($field)) {
                     $user->$field = $request->$field;
@@ -478,6 +478,39 @@ class UserController extends Controller
     public function getUserByToken()
     {
         $user = Auth::user();
+
+        if (!$user) {
+            return response()->json(['error' => 'Unauthenticated'], 401);
+        }
+
+        $userCar = UserCar::where('user_id', $user->id)->first();
+
+        if ($userCar) {
+            $user->car_id = $userCar->id;
+        } else {
+            $user->car_id = null;
+        }
         return response()->json($user);
+    }
+
+    public function attachCar(Request $request) {
+        $request->validate([
+            'car_id' => 'required|string',
+            'color' => 'required|string',
+            'year' => 'required|numeric',
+            'thumbnail' => 'required|string',
+        ]);
+
+        $userCar = new UserCar();
+        $userCar->id = Str::uuid();
+        $userCar->user_id = auth()->user()->id;
+        $userCar->car_id = $request->car_id;
+        $userCar->color = $request->color;
+        $userCar->year = $request->year;
+        $userCar->thumbnail = $request->thumbnail;
+
+        $userCar->save();
+
+        return response()->json(['message'=>'Car attached successfully.'],200);
     }
 }
