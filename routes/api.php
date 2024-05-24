@@ -3,6 +3,7 @@
 use App\Http\Controllers\CarController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\CityController;
+use App\Http\Controllers\FriendController;
 use App\Http\Controllers\GroupChatController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\MediaController;
@@ -82,5 +83,9 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
 
     Route::get('members/get/{group}',[GroupChatController::class,'retrieveAllGroupMembers']);
 
+
+    Route::post('friends/request/{user}',[FriendController::class,'sendFriendRequest']);
+    Route::put('friends/accept/{user}',[FriendController::class,'acceptFriendRequest']);
+    Route::delete('friends/decline/{user}',[FriendController::class,'declineFriendRequest']);
 });
 
