@@ -85,15 +85,15 @@ class RouteController extends Controller
     }
     private function formatRoute($route){
         $route->load('cityFrom', 'cityTo', 'driver', 'location');
-    
+
         $route->city_from = $route->cityFrom;
         $route->city_to = $route->cityTo;
-    
+
         unset($route->city_from_id);
         unset($route->city_to_id);
         unset($route->driver_id);
         unset($route->location_id);
-    
+
         return $route;
     }
 
@@ -196,7 +196,7 @@ class RouteController extends Controller
         ]);
 
         $route = Route::create($request->all());
-        $this->addGroup($user,$route);
+        $this->addGroup($user,$route->id);
         return response()->json($route, 201);
     }
 
@@ -286,7 +286,7 @@ class RouteController extends Controller
         $reservations = Route::with(["reservations"=> function($query) {
             $query->where('status', 'Approved');
         }])->find($route->id)->reservations;
-        
+
         $route->takenSeats = $reservations->pluck('seat')->toArray();
         $reservFromUser = Route::with(['reservations' => function ($query) use ($user) {
             $query->where('user_id', $user->id);
