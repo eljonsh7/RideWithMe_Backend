@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Ban;
 use App\Models\User;
 use App\Models\Report;
+use App\Models\FriendRequest;
 use App\Models\UserCar;
 use Carbon\Carbon;
 use Exception;
@@ -31,7 +32,6 @@ use Ramsey\Uuid\Uuid;
  *     @OA\Property(property="role", type="string", description="Role of the user")
  * )
  */
-
 class UserController extends Controller
 {
     /**
@@ -307,13 +307,14 @@ class UserController extends Controller
      * )
      */
 
-    public function delete($userId) {
+    public function delete($userId)
+    {
         $user = User::findOrFail($userId);
-        if($user){
+        if ($user) {
             $user->delete();
-            return response()->json(['message'=>'User deleted successfully.'],200);
+            return response()->json(['message' => 'User deleted successfully.'], 200);
         }
-        return response()->json(['message'=>'User not found.'],404);
+        return response()->json(['message' => 'User not found.'], 404);
     }
 
     /**
@@ -348,9 +349,10 @@ class UserController extends Controller
      * )
      */
 
-    public function ban(Request $request, $userId) {
+    public function ban(Request $request, $userId)
+    {
         $user = User::findOrFail($userId);
-        if($user){
+        if ($user) {
             $request->validate([
                 'date_until' => 'nullable|string',
             ]);
@@ -364,9 +366,9 @@ class UserController extends Controller
 
             $ban->save();
 
-            return response()->json(['message'=>'User banned successfully.'],200);
+            return response()->json(['message' => 'User banned successfully.'], 200);
         }
-        return response()->json(['message'=>'User not found.'],404);
+        return response()->json(['message' => 'User not found.'], 404);
     }
 
     /**
@@ -395,14 +397,15 @@ class UserController extends Controller
      * )
      */
 
-    public function removeBan($userId) {
+    public function removeBan($userId)
+    {
         $ban = Ban::where('user_id', $userId);
-        if($ban){
+        if ($ban) {
             $ban->delete();
 
-            return response()->json(['message'=>'User unbanned successfully.'],200);
+            return response()->json(['message' => 'User unbanned successfully.'], 200);
         }
-        return response()->json(['message'=>'Ban not found.'],404);
+        return response()->json(['message' => 'Ban not found.'], 404);
     }
 
 
@@ -439,7 +442,6 @@ class UserController extends Controller
     public function getUser($id)
     {
         $user = User::find($id);
-
         if (!$user) {
             return response()->json([
                 'success' => false,
@@ -447,6 +449,15 @@ class UserController extends Controller
             ], 404);
         }
 
+        $authUser = auth()->user();
+        $friendRequest = FriendRequest::where('sender_id', $id)->where('receiver_id', $authUser->id)
+            ->orWhere('sender_id', $authUser->id)
+            ->where('receiver_id', $id)->first();
+
+        if ($friendRequest) {
+            $user->isFriend = ['status' => $friendRequest->status, 'sending' => $authUser->id == $friendRequest->sender_id];
+        }
+        unset($user->password);
         return response()->json([
             'success' => true,
             'data' => $user
@@ -493,7 +504,8 @@ class UserController extends Controller
         return response()->json($user);
     }
 
-    public function attachCar(Request $request) {
+    public function attachCar(Request $request)
+    {
         $request->validate([
             'car_id' => 'required|string',
             'color' => 'required|string',
@@ -511,6 +523,6 @@ class UserController extends Controller
 
         $userCar->save();
 
-        return response()->json(['message'=>'Car attached successfully.'],200);
+        return response()->json(['message' => 'Car attached successfully.'], 200);
     }
 }
