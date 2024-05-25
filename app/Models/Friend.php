@@ -2,25 +2,26 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Friend extends Model
 {
-    use HasFactory;
+    use HasFactory, HasUuids;
     protected $primaryKey = 'id';
 
     protected $fillable = [
-        'id', 'user1_id', 'user2_id',
+        'user_id', 'friend_id',
     ];
 
-    public function user1()
+    public function user()
     {
-        return $this->belongsTo(User::class, 'user1_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function user2()
+    public function friend()
     {
-        return $this->belongsTo(User::class, 'user2_id');
+        return $this->belongsTo(User::class, 'friend_id');
     }
 }

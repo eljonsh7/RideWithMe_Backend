@@ -17,4 +17,10 @@ class User extends Authenticatable
     protected $fillable = [
         'id', 'first_name', 'last_name', 'profile_picture', 'email', 'password', 'role',
     ];
+
+    public function friends()
+    {
+        return $this->belongsToMany(User::class, 'friends', 'user_id', 'friend_id');
+    }
+
 }
