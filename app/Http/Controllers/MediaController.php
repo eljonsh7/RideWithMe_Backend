@@ -38,7 +38,7 @@ class MediaController extends Controller
  */
     public function store(Request $request)
     {
-        $filePath = $request->file('media')->store('cars', 'public');
+        $filePath = $request->file('media')->store($request->folder, 'public');
         return response()->json(['message' => 'File stored successfully', 'file_path' => $filePath], 201);
     }
 }

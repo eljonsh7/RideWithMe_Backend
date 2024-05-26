@@ -42,6 +42,7 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
     Route::delete('users/ban/remove/{userId}', [UserController::class, 'removeBan']);
 
     Route::post('users/car/attach', [UserController::class, 'attachCar']);
+    Route::put('users/car/update', [UserController::class, 'UpdateAttachedCar']);
 
     Route::post('media/store', [MediaController::class, 'store']);
 

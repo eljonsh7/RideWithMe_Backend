@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Ban;
+use App\Models\Car;
 use App\Models\User;
 use App\Models\Report;
 use App\Models\FriendRequest;
@@ -495,12 +496,12 @@ class UserController extends Controller
         }
 
         $userCar = UserCar::where('user_id', $user->id)->first();
-
-        if ($userCar) {
-            $user->car_id = $userCar->id;
-        } else {
-            $user->car_id = null;
+        if($userCar) {
+            $car = Car::where('id', $userCar->car_id)->first();
+            $user->car = $car;
         }
+
+        $user->userCar = $userCar;
         return response()->json($user);
     }
 
@@ -525,4 +526,33 @@ class UserController extends Controller
 
         return response()->json(['message' => 'Car attached successfully.'], 200);
     }
+
+    public function UpdateAttachedCar(Request $request) {
+        $request->validate([
+            'car_id' => 'nullable|string',
+            'color' => 'nullable|string',
+            'year' => 'nullable|numeric',
+            'thumbnail' => 'nullable|string',
+        ]);
+
+        $userCar = UserCar::where('user_id', Auth::user()->id)->firstOrFail();
+
+        if ($request->has('car_id')) {
+            $userCar->car_id = $request->car_id;
+        }
+        if ($request->has('color')) {
+            $userCar->color = $request->color;
+        }
+        if ($request->has('year')) {
+            $userCar->year = $request->year;
+        }
+        if ($request->has('thumbnail')) {
+            $userCar->thumbnail = $request->thumbnail;
+        }
+
+        $userCar->save();
+
+        return response()->json(['message' => 'Car updated successfully.'], 200);
+    }
+
 }

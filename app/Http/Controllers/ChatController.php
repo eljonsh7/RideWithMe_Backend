@@ -56,8 +56,8 @@ class ChatController extends Controller
             $conversation2->increment('unread_messages');
         }
 
-        broadcast(new MessageEvent($message,$recipient))->toOthers();
-        broadcast(new MessageEvent($message, $authenticatedUserId))->toOthers();
+        broadcast(new MessageEvent($message, $recipient, $authenticatedUserId, 'private'))->toOthers();
+        broadcast(new MessageEvent($message, $authenticatedUserId, $recipient, 'private'))->toOthers();
 
         return response()->json([
             'message' => $message,
@@ -102,15 +102,15 @@ class ChatController extends Controller
             return response()->json(['messages' => [], 'status' => 'undefined'], 200);
         }
 
-        $messages = $conversation->messages->map(function ($message) {
+        $messages = $conversation->messages->sortBy('created_at')->map(function ($message) {
             unset($message->pivot);
 
             $sender = User::find($message->user_id);
-            unset($message->password);
+            unset($sender->password); // Ensure the sender's password is unset
             $message->sender = $sender;
 
             return $message;
-        });
+        })->values()->toArray();
 
         return response()->json([
             'messages' => $messages,
