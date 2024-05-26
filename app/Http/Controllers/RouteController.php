@@ -147,13 +147,7 @@ class RouteController extends Controller
             }
         }
 
-        if ($request->has('page')) {
-            $query->paginate($request->pageSize);
-        } else {
-            $query->get();
-        }
-
-        $routes = $query->paginate($request->pageSize, ['*'], 'page', $request->page);
+        $routes = $query->paginate(6, ['*'], 'page', $request->page);
 
         $routes = $this->formatRoutes($routes);
 
@@ -287,6 +281,7 @@ class RouteController extends Controller
             $query->where('status', 'Approved');
         }])->find($route->id)->reservations;
 
+        $route->group = Group::where('route_id', $id)->first();
         $route->takenSeats = $reservations->pluck('seat')->toArray();
         $reservFromUser = Route::with(['reservations' => function ($query) use ($user) {
             $query->where('user_id', $user->id);

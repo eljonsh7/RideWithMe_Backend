@@ -108,9 +108,10 @@ class GroupChatController extends Controller
             $groupMembers = Reservation::where('route_id', $groupObj->route_id)
                 ->where('status', 'accepted')
                 ->get();
-            broadcast(new MessageEvent($message,$groupObj->route->driver->id))->toOthers();
+
+            broadcast(new MessageEvent($message,$groupObj->route->driver->id, 'group'))->toOthers();
             foreach ($groupMembers as $groupMember1){
-                broadcast(new MessageEvent($message, $groupMember1->user_id))->toOthers();
+                broadcast(new MessageEvent($message, $groupMember1->user_id, 'group'))->toOthers();
             }
 
             return response()->json([
