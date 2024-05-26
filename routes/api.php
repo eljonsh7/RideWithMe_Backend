@@ -10,6 +10,7 @@ use App\Http\Controllers\MediaController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\RouteController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\UserFeedbackController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -83,9 +84,18 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
 
     Route::get('members/get/{group}',[GroupChatController::class,'retrieveAllGroupMembers']);
 
-
     Route::post('friends/request/{user}',[FriendController::class,'sendFriendRequest']);
     Route::put('friends/accept/{user}',[FriendController::class,'acceptFriendRequest']);
     Route::delete('friends/decline/{user}',[FriendController::class,'declineFriendRequest']);
+    Route::delete('friends/cancel/{user}',[FriendController::class,'cancelFriendRequest']);
+    Route::delete('friends/unfriend/{user}',[FriendController::class,'unfriend']);
+
+    Route::post('ratings/add/{user}',[UserFeedbackController::class,'addRating']);
+    Route::put('ratings/update/{user}',[UserFeedbackController::class,'updateRating']);
+    Route::delete('ratings/delete/{user}',[UserFeedbackController::class,'deleteRating']);
+
+    Route::post('reports/add/{user}',[UserFeedbackController::class,'addReport']);
+    Route::delete('reports/delete/{user}',[UserFeedbackController::class,'deleteReport']);
+
 });
 

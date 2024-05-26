@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Friend;
-use App\Models\Request;
+use App\Models\FriendRequest;
 use App\Models\User;
 
 class FriendController extends Controller
@@ -14,16 +14,15 @@ class FriendController extends Controller
         $sender = auth()->user();
 
         // Check if a pending or accepted friend request already exists
-        $existingRequest = Request::where('sender_id', $sender->id)
+        $existingRequest = FriendRequest::where('sender_id', $sender->id)
             ->where('receiver_id', $user)
-            ->whereIn('status', ['pending', 'accepted'])
             ->first();
 
         if ($existingRequest) {
             return response()->json(['error' => 'Friend request already sent or accepted.']);
         }
         // Create a new friend request
-        Request::create([
+        FriendRequest::create([
             'sender_id' => $sender->id,
             'receiver_id' => $user
         ]);
@@ -39,7 +38,7 @@ class FriendController extends Controller
         }
         $receiver = auth()->user();
 
-        $friendRequest = Request::where('sender_id', $sender->id)
+        $friendRequest = FriendRequest::where('sender_id', $sender->id)
             ->where('receiver_id', $receiver->id)
             ->first();
 
@@ -65,8 +64,9 @@ class FriendController extends Controller
     public function declineFriendRequest($user)
     {
         $receiver = auth()->user();
-        $friendRequest = Request::where('sender_id', $user)
+        $friendRequest = FriendRequest::where('sender_id', $user)
             ->where('receiver_id', $receiver->id)
+            ->where('status', 'pending')
             ->first();
 
         if (!$friendRequest) {
@@ -75,5 +75,44 @@ class FriendController extends Controller
         $friendRequest->delete();
 
         return response()->json(['message' => 'Friend request declined.']);
+    }
+
+    public function cancelFriendRequest($user)
+    {
+        $sender = auth()->user();
+        $friendRequest = FriendRequest::where('sender_id', $sender->id)
+            ->where('receiver_id', $user)
+            ->where('status', 'pending')
+            ->first();
+
+        if (!$friendRequest) {
+            return response()->json(['error' => 'Friend request not found.'], 404);
+        }
+        $friendRequest->delete();
+
+        return response()->json(['message' => 'Friend request canceled.']);
+    }
+
+    public function unfriend($user)
+    {
+        $authUser = auth()->user();
+        $friend = User::find($user);
+
+        if (!$friend) {
+            return response()->json(['error' => 'User not found.'], 404);
+        }
+
+        if (!$authUser->friends->contains($friend)) {
+            return response()->json(['error' => 'You are not friends with this user.'], 400);
+        }
+
+        $authUser->friends()->detach($friend);
+        $friend->friends()->detach($authUser);
+
+        FriendRequest::where('sender_id', $authUser->id)->where('receiver_id', $friend->id)
+            ->orWhere('sender_id', $friend->id)->where('receiver_id', $authUser->id)
+            ->delete();
+
+        return response()->json(['message' => 'You have unfriended the user.']);
     }
 }
