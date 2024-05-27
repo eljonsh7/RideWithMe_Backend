@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Rating;
 use App\Models\Report;
+use App\Models\Suggestion;
 use Illuminate\Http\Request;
 
 class UserFeedbackController extends Controller
@@ -88,4 +89,50 @@ class UserFeedbackController extends Controller
 
         return response()->json(['message' => 'Rating deleted successfully!'], 200);
     }
+
+
+    public function addSuggestion(Request $request)
+    {
+        $request->validate([
+            'suggestion_type' => 'required|string',
+            'suggestion_content' => 'required|string'
+        ]);
+
+        $authUser = auth()->user();
+
+        Suggestion::create([
+            'user_id' => $authUser->id,
+            'type' =>  $request->suggestion_type,
+            'content' => $request->suggestion_content
+        ]);
+
+        return response()->json(['message' => 'Suggestion added successfully!'], 201);
+    }
+
+    public function deleteSuggestion($suggestion)
+    {
+        $suggestion = Suggestion::where('id',$suggestion)->first();
+        if(!$suggestion){
+            return response()->json(['message' => 'Suggestion not found.'], 404);
+        }
+
+        $suggestion->delete();
+
+        return response()->json(['message' => 'Suggestion deleted successfully!'], 200);
+    }
+
+    public function getSuggestions()
+    {
+        $suggestions = Suggestion::with(['user' => function($query) {
+            $query->select('id', 'first_name', 'last_name','profile_picture');
+        }])->get();
+
+        if ($suggestions->isEmpty()) {
+            return response()->json(['message' => 'No suggestions.'], 404);
+        }
+
+        return response()->json(['message' => 'Suggestions fetched successfully!', 'suggestions' => $suggestions], 200);
+    }
+
+
 }
