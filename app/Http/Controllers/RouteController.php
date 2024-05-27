@@ -9,6 +9,7 @@ use App\Http\Controllers\ReservationController;
 use App\Models\Conversation;
 use App\Models\Group;
 use App\Models\Reservation;
+use App\Models\Rating;
 use Illuminate\Http\Request;
 use App\Models\Route;
 use Illuminate\Support\Carbon;
@@ -89,6 +90,13 @@ class RouteController extends Controller
 
         $route->city_from = $route->cityFrom;
         $route->city_to = $route->cityTo;
+
+        $averageRating = Rating::where('rated_user_id', $route->driver_id)
+        ->avg('stars_number');
+
+        if($averageRating){
+            $route->driver->averageRating = $averageRating;
+        }
 
         unset($route->city_from_id);
         unset($route->city_to_id);
@@ -278,7 +286,7 @@ class RouteController extends Controller
         }
         $route = $this->formatRoute($route);
 
-        $reservations = Route::ith(["reservations"=> function($query) {
+        $reservations = Route::with(["reservations"=> function($query) {
             $query->where('status', 'accepted');
         }])->find($route->id)->reservations;
 
@@ -286,7 +294,7 @@ class RouteController extends Controller
         $route->takenSeats = $reservations->pluck('seat')->toArray();
         $reservFromUser = Route::with(['reservations' => function ($query) use ($user) {
             $query->where('user_id', $user->id);
-        }])->find($route->id)->reswervations->first();
+        }])->find($route->id)->reservations->first();
         $route->takenSeatByUser = $reservFromUser ? ['id'=>$reservFromUser->id,'seat' =>$reservFromUser->seat,'status'=>$reservFromUser->status]:null;
         return response()->json($route, 200);
     }

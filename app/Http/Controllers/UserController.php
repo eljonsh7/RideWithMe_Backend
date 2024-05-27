@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\Report;
 use App\Models\FriendRequest;
 use App\Models\UserCar;
+use App\Models\Rating;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
@@ -454,9 +455,20 @@ class UserController extends Controller
         $friendRequest = FriendRequest::where('sender_id', $id)->where('receiver_id', $authUser->id)
             ->orWhere('sender_id', $authUser->id)
             ->where('receiver_id', $id)->first();
+        
+        $averageRating = Rating::where('rated_user_id', $id)
+        ->avg('stars_number');
+
+        $rating = Rating::where('rated_user_id',$id)->where('rater_id',$authUser->id)->first();
 
         if ($friendRequest) {
             $user->isFriend = ['status' => $friendRequest->status, 'sending' => $authUser->id == $friendRequest->sender_id];
+        }
+        if($averageRating){
+            $user->averageRating = $averageRating;
+        }
+        if($rating){
+            $user->alreadyRating = $rating;
         }
         unset($user->password);
         return response()->json([

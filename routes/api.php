@@ -11,6 +11,7 @@ use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\RouteController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\UserFeedbackController;
+use App\Http\Controllers\ReportReasonController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -91,13 +92,16 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
     Route::delete('friends/decline/{user}',[FriendController::class,'declineFriendRequest']);
     Route::delete('friends/cancel/{user}',[FriendController::class,'cancelFriendRequest']);
     Route::delete('friends/unfriend/{user}',[FriendController::class,'unfriend']);
+    Route::get('friends/get/{user}',[FriendController::class,'getFriends']);
 
     Route::post('ratings/add/{user}',[UserFeedbackController::class,'addRating']);
     Route::put('ratings/update/{user}',[UserFeedbackController::class,'updateRating']);
     Route::delete('ratings/delete/{user}',[UserFeedbackController::class,'deleteRating']);
+    Route::get('ratings/get/{user}',[UserFeedbackController::class,'getRatings']);
 
     Route::post('reports/add/{user}',[UserFeedbackController::class,'addReport']);
     Route::delete('reports/delete/{user}',[UserFeedbackController::class,'deleteReport']);
+    Route::get('report/reasons/get',[ReportReasonController::class,'index']);
 
 });
 
