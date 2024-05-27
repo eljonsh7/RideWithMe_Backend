@@ -7,6 +7,7 @@ use App\Http\Controllers\FriendController;
 use App\Http\Controllers\GroupChatController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\MediaController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\RouteController;
 use App\Http\Controllers\UserController;
@@ -70,7 +71,7 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
     Route::get('routes/{id}', [RouteController::class, 'getRoute']);
     Route::get('routes/user/{id}', [RouteController::class, 'getUserRoutes']);
 
-    Route::post('reservations/create',[ReservationController::class,'store']);
+    Route::post('reservations/create/{route}',[ReservationController::class,'store']);
     Route::put('reservations/update/{reservation}',[ReservationController::class,'update']);
     Route::get('reservations/received',[ReservationController::class,'getReceivedRequests']);
     Route::get('reservations/sent',[ReservationController::class,'getSentRequests']);
@@ -106,5 +107,8 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
     Route::post('suggestions/add',[UserFeedbackController::class,'addSuggestion']);
     Route::delete('suggestions/delete/{suggestion}',[UserFeedbackController::class,'deleteSuggestion']);
     Route::get('suggestions/get',[UserFeedbackController::class,'getSuggestions']);
+
+    Route::get('notifications/get/{user}',[NotificationController::class,'getUserNotifications']);
+
 });
 

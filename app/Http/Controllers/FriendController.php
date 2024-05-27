@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NotificationEvent;
 use App\Models\Friend;
 use App\Models\FriendRequest;
+use App\Models\Notification;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -27,7 +29,22 @@ class FriendController extends Controller
             'sender_id' => $sender->id,
             'receiver_id' => $user
         ]);
-//        broadcast(new NotificationEvent($notificationEventData))->toOthers();
+        $notificationData = Notification::create([
+            'user_id' => $user,
+            'sender_id' => $sender->id,
+            'type' => 'friendRequestSent',
+        ]);
+
+        unset($sender->password);
+        $notificationEventData = [
+            'id' => $notificationData->id,
+            'user_id' => $notificationData->user_id,
+            'sender_id' => $notificationData->sender_id,
+            'type' => $notificationData->type,
+            'created_at' => $notificationData->created_at,
+            'user' => $sender
+        ];
+        broadcast(new NotificationEvent($notificationEventData))->toOthers();
         return response()->json(['message' => 'Friend request sent.']);
     }
 
@@ -58,7 +75,22 @@ class FriendController extends Controller
             'user_id' => $receiver->id,
             'friend_id' => $sender->id
         ]);
-//        broadcast(new NotificationEvent($notificationEventData))->toOthers();
+        $notificationData = Notification::create([
+            'user_id' => $sender->id,
+            'sender_id' => $receiver->id,
+            'type' => 'friendRequestAccepted',
+        ]);
+
+        unset($receiver->password);
+        $notificationEventData = [
+            'id' => $notificationData->id,
+            'user_id' => $notificationData->user_id,
+            'sender_id' => $notificationData->sender_id,
+            'type' => $notificationData->type,
+            'created_at' => $notificationData->created_at,
+            'user' => $receiver
+        ];
+        broadcast(new NotificationEvent($notificationEventData))->toOthers();
         return response()->json(['message' => 'Friend request accepted.']);
     }
 
@@ -74,6 +106,23 @@ class FriendController extends Controller
             return response()->json(['error' => 'Friend request not found.'], 404);
         }
         $friendRequest->delete();
+
+        $notificationData = Notification::create([
+            'user_id' => $user,
+            'sender_id' => $receiver->id,
+            'type' => 'friendRequestDeclined',
+        ]);
+
+        unset($receiver->password);
+        $notificationEventData = [
+            'id' => $notificationData->id,
+            'user_id' => $notificationData->user_id,
+            'sender_id' => $notificationData->sender_id,
+            'type' => $notificationData->type,
+            'created_at' => $notificationData->created_at,
+            'user' => $receiver
+        ];
+        broadcast(new NotificationEvent($notificationEventData))->toOthers();
 
         return response()->json(['message' => 'Friend request declined.']);
     }
