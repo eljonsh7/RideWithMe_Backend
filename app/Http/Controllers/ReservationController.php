@@ -173,6 +173,19 @@ class ReservationController extends Controller
         }
     }
 
+    public function getRouteRequests($routeId)
+    {
+        try {
+            $reservations = Reservation::where('route_id', $routeId)
+                ->with(['route', 'user'])
+                ->get();
+
+            return response()->json(['message' => 'Reservations fetched successfully.', 'reservations' => $reservations], 200);
+        } catch (Exception $e) {
+            return response()->json(['message' => 'An error occurred.', 'error' => $e->getMessage()], 500);
+        }
+    }
+
     /**
      * @OA\Get(
      *     path="/v1/reservations/sent",

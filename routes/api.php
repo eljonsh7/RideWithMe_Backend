@@ -73,6 +73,7 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
     Route::put('reservations/update/{reservation}',[ReservationController::class,'update']);
     Route::get('reservations/received',[ReservationController::class,'getReceivedRequests']);
     Route::get('reservations/sent',[ReservationController::class,'getSentRequests']);
+    Route::get('reservations/route/{routeId}',[ReservationController::class,'getRouteRequests']);
 
     Route::post('messages/send/{recipient}',[ChatController::class,'sendMessage']);
     Route::get('messages/get/{recipient}/{type}',[ChatController::class,'getConversation']);

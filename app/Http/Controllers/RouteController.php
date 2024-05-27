@@ -8,6 +8,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\ReservationController;
 use App\Models\Conversation;
 use App\Models\Group;
+use App\Models\Reservation;
 use Illuminate\Http\Request;
 use App\Models\Route;
 use Illuminate\Support\Carbon;
@@ -277,16 +278,16 @@ class RouteController extends Controller
         }
         $route = $this->formatRoute($route);
 
-        $reservations = Route::with(["reservations"=> function($query) {
-            $query->where('status', 'Approved');
+        $reservations = Route::ith(["reservations"=> function($query) {
+            $query->where('status', 'accepted');
         }])->find($route->id)->reservations;
 
         $route->group = Group::where('route_id', $id)->first();
         $route->takenSeats = $reservations->pluck('seat')->toArray();
         $reservFromUser = Route::with(['reservations' => function ($query) use ($user) {
             $query->where('user_id', $user->id);
-        }])->find($route->id)->reservations->first();
-        $route->takenSeatByUser = $reservFromUser ? ['seat' =>$reservFromUser->seat,'status'=>$reservFromUser->status]:null;
+        }])->find($route->id)->reswervations->first();
+        $route->takenSeatByUser = $reservFromUser ? ['id'=>$reservFromUser->id,'seat' =>$reservFromUser->seat,'status'=>$reservFromUser->status]:null;
         return response()->json($route, 200);
     }
 

@@ -46,22 +46,27 @@ class GroupChatController extends Controller
             ->where('status', 'accepted')
             ->with('user')
             ->get();
-        $members = $reservations->pluck('user');
-        $isMember = $members->contains($authUser) || $owner->id == $authUser->id;
+        $members = collect($reservations->pluck('user')->toArray());
+
+        $memberIds = collect($members)->pluck('id')->toArray();
+
+//        dd($members);
+        $isMember = in_array($authUser->id, $memberIds) || $owner->id == $authUser->id;
 
         if (!$isMember) {
             return response()->json(['message' => 'You are not a member of this group.'], 403);
         }
         $formatUserData = function ($user) {
             return [
-                'user_id' => $user->id,
-                'first_name' => $user->first_name,
-                'last_name' => $user->last_name,
-                'profile_picture' => $user->profile_picture
+                'user_id' => $user['id'],
+                'first_name' => $user['first_name'],
+                'last_name' => $user['last_name'],
+                'profile_picture' => $user['profile_picture']
             ];
         };
         $formattedOwner = $formatUserData($owner);
         $formattedMembers = $members->map($formatUserData);
+
 
         return response()->json([
             'owner' => $formattedOwner,
@@ -109,9 +114,11 @@ class GroupChatController extends Controller
                 ->where('status', 'accepted')
                 ->get();
 
-            broadcast(new MessageEvent($message,$groupObj->route->driver->id, 'group'))->toOthers();
+            unset($user->password);
+
+            broadcast(new MessageEvent($message,$groupObj->route->driver->id,$user, 'group'))->toOthers();
             foreach ($groupMembers as $groupMember1){
-                broadcast(new MessageEvent($message, $groupMember1->user_id, 'group'))->toOthers();
+                broadcast(new MessageEvent($message, $groupMember1->user_id,$user, 'group'))->toOthers();
             }
 
             return response()->json([
