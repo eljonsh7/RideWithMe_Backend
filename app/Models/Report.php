@@ -24,4 +24,9 @@ class Report extends Model
     {
         return $this->belongsTo(User::class, 'reported_user_id');
     }
+
+    public function reportReason()
+    {
+        return $this->belongsTo(ReportReason::class, 'reason');
+    }
 }

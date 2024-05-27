@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Friend;
 use App\Models\FriendRequest;
 use App\Models\User;
+use Illuminate\Http\Request;
 
 class FriendController extends Controller
 {
@@ -114,5 +115,26 @@ class FriendController extends Controller
             ->delete();
 
         return response()->json(['message' => 'You have unfriended the user.']);
+    }
+
+    public function getFriends(Request $request,$user)
+    {
+        $userObj = User::where('id', $user)->with(['friends' => function($query) {
+            $query->orderBy('created_at', 'desc');
+        }])->first();
+
+        if (!$userObj) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
+        $friends = $userObj->friends;
+
+        $friends =$friends->take(5);
+        
+        $friends->each(function ($friend) {
+            $friend->makeHidden(['password','pivot','role','is_admin']);
+        });
+        
+        return response()->json(['friends' => $friends],200);
     }
 }

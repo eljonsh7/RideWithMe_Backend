@@ -12,7 +12,8 @@ class UserFeedbackController extends Controller
     public function addReport(Request $request, $user)
     {
         $request->validate([
-            'reason' => 'required|string'
+            'reason' => 'required|integer',
+            'description' => 'required|string'
         ]);
 
         $authUser = auth()->user();
@@ -43,7 +44,8 @@ class UserFeedbackController extends Controller
     public function addRating(Request $request, $user)
     {
         $request->validate([
-            'stars_number' => 'required|integer'
+            'stars_number' => 'required|integer',
+            'description' => 'string|nullable'
         ]);
 
         $authUser = auth()->user();
@@ -51,7 +53,8 @@ class UserFeedbackController extends Controller
         Rating::create([
             'rated_user_id' => $user,
             'rater_id' => $authUser->id,
-            'stars_number' => $request->stars_number
+            'stars_number' => $request->stars_number,
+            'description' => $request->description
         ]);
 
         return response()->json(['message' => 'Rating added successfully!'], 201);
@@ -60,7 +63,8 @@ class UserFeedbackController extends Controller
     public function updateRating(Request $request, $user)
     {
         $request->validate([
-            'stars_number' => 'required|integer'
+            'stars_number' => 'required|integer',
+            'description' => 'string|nullable'
         ]);
         $authUser = auth()->user();
 
@@ -70,6 +74,7 @@ class UserFeedbackController extends Controller
         }
 
         $rating->stars_number = $request->stars_number;
+        $rating->description = $request->description;
 
         $rating->save();
 
@@ -90,6 +95,30 @@ class UserFeedbackController extends Controller
         return response()->json(['message' => 'Rating deleted successfully!'], 200);
     }
 
+    public function getRatings($user)
+    {
+        $ratings = Rating::where('rated_user_id',$user)->get();
+        $ratings->load("ratedUser","rater");
+        foreach ($ratings as $rating) {
+            if ($rating->ratedUser) {
+                unset($rating->ratedUser->password);
+                unset($rating->ratedUser->email);
+                unset($rating->ratedUser->role);
+                unset($rating->ratedUser->is_admin);
+            }
+            if ($rating->rater) {
+                unset($rating->rater->password);
+                unset($rating->rater->email);
+                unset($rating->rater->role);
+                unset($rating->rater->is_admin);
+            }
+        }
+
+        if(!$ratings){
+            return response()->json(['message' => 'Rating not found.'], 404);
+        }
+        return response()->json(['ratings' => $ratings], 200);
+    }
 
     public function addSuggestion(Request $request)
     {
@@ -133,6 +162,4 @@ class UserFeedbackController extends Controller
 
         return response()->json(['message' => 'Suggestions fetched successfully!', 'suggestions' => $suggestions], 200);
     }
-
-
 }
