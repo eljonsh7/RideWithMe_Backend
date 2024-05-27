@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NotificationEvent;
+use App\Models\Notification;
 use App\Models\Reservation;
+use App\Models\Route;
 use Exception;
 use Illuminate\Http\Request;
 
@@ -59,23 +62,44 @@ class ReservationController extends Controller
      * )
      */
 
-    public function store(Request $request)
+    public function store(Request $request, $route)
     {
         $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'route_id' => 'required|exists:routes,id',
-            'status' => 'required|string',
             'seat' => 'required|integer',
         ]);
+        $sender = auth()->user();
 
-        $reservation = Reservation::where('user_id', $request->user_id)
-        ->where('route_id', $request->route_id)
-        ->exists();
+        $reservation = Reservation::where('user_id', $sender->id)
+            ->where('route_id', $route)
+            ->exists();
 
-        if($reservation){
+        if ($reservation) {
             return response()->json(['message' => 'Reservation already exists!'], 409);
         }
-        $reservation = Reservation::create($request->all());
+        $reservation = Reservation::create([
+                'user_id' => $sender->id,
+                'route_id' => $route,
+                'status' => 'requested',
+                'seat' => $request->seat
+            ]
+        );
+        $route = Route::where('id', $route)->with('driver')->first();
+        unset($sender->password);
+        $notificationData = Notification::create([
+            'user_id' => $route->driver->id,
+            'sender_id' => $sender->id,
+            'type' => 'routeReservationRequested',
+        ]);
+
+        $notificationEventData = [
+            'id' => $notificationData->id,
+            'user_id' => $notificationData->user_id,
+            'sender_id' => $notificationData->sender_id,
+            'type' => $notificationData->type,
+            'created_at' => $notificationData->created_at,
+            'user' => $sender
+        ];
+        broadcast(new NotificationEvent($notificationEventData))->toOthers();
         return response()->json($reservation, 201);
     }
 
@@ -128,6 +152,23 @@ class ReservationController extends Controller
             $reservation = Reservation::find($reservation)->first();
             $reservation->status = $request->status;
             $reservation->save();
+            $sender = auth()->user();
+            unset($sender->password);
+            $notificationData = Notification::create([
+                'user_id' => $reservation->user_id,
+                'sender_id' => $sender->id,
+                'type' => 'routeReservation'.ucfirst($reservation->status),
+            ]);
+
+            $notificationEventData = [
+                'id' => $notificationData->id,
+                'user_id' => $notificationData->user_id,
+                'sender_id' => $notificationData->sender_id,
+                'type' => $notificationData->type,
+                'created_at' => $notificationData->created_at,
+                'user' => $sender
+            ];
+            broadcast(new NotificationEvent($notificationEventData))->toOthers();
             return response()->json(['message' => 'Reservation ' . $request->status . ".", 'reservation' => $reservation], 200);
         } catch (Exception $e) {
             return response()->json(['message' => 'An error occurred.', 'error' => $e->getMessage()], 500);
@@ -160,7 +201,7 @@ class ReservationController extends Controller
     {
         $user = auth()->user();
         try {
-            $reservations = Reservation::where('status','requested')
+            $reservations = Reservation::where('status', 'requested')
                 ->with('route')->with('user')
                 ->whereHas('route.driver', function ($query) use ($user) {
                     $query->where('id', $user->id);
