@@ -103,5 +103,8 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
     Route::delete('reports/delete/{user}',[UserFeedbackController::class,'deleteReport']);
     Route::get('report/reasons/get',[ReportReasonController::class,'index']);
 
+    Route::post('suggestions/add',[UserFeedbackController::class,'addSuggestion']);
+    Route::delete('suggestions/delete/{suggestion}',[UserFeedbackController::class,'deleteSuggestion']);
+    Route::get('suggestions/get',[UserFeedbackController::class,'getSuggestions']);
 });
 
