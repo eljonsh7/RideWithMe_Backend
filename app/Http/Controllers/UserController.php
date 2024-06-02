@@ -38,7 +38,7 @@ class UserController extends Controller
 {
     /**
      * @OA\Post(
-     *     path="/v1/login",
+     *     path="/api/v1/login",
      *     tags={"User"},
      *     summary="Login user",
      *     description="Login a user with email and password",
@@ -109,7 +109,7 @@ class UserController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/v1/signup",
+     *     path="/api/v1/signup",
      *     tags={"User"},
      *     summary="Signup user",
      *     description="Signup a new user",
@@ -179,8 +179,9 @@ class UserController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/v1/users/get",
+     *     path="/api/v1/users/get",
      *     tags={"User"},
+     *     security={{"bearerAuth": {}}},
      *     summary="Get all users",
      *     description="Get a list of all users",
      *     @OA\Response(
@@ -224,8 +225,9 @@ class UserController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/v1/users/update/{userId}",
+     *     path="/api/v1/users/update/{userId}",
      *     tags={"User"},
+     *     security={{"bearerAuth": {}}},
      *     summary="Update user",
      *     description="Update user details",
      *     @OA\Parameter(
@@ -285,8 +287,9 @@ class UserController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/v1/users/delete/{userId}",
+     *     path="/api/v1/users/delete/{userId}",
      *     tags={"User"},
+     *     security={{"bearerAuth": {}}},
      *     summary="Delete user",
      *     description="Delete a user by ID",
      *     @OA\Parameter(
@@ -321,8 +324,9 @@ class UserController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/v1/users/ban/{userId}",
+     *     path="/api/v1/users/ban/{userId}",
      *     tags={"User"},
+     *     security={{"bearerAuth": {}}},
      *     summary="Ban user",
      *     description="Ban a user by ID",
      *     @OA\Parameter(
@@ -375,8 +379,9 @@ class UserController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/v1/users/ban/remove/{userId}",
+     *     path="/api/v1/users/ban/remove/{userId}",
      *     tags={"User"},
+     *     security={{"bearerAuth": {}}},
      *     summary="Remove ban from user",
      *     description="Remove ban from a user by ID",
      *     @OA\Parameter(
@@ -413,8 +418,9 @@ class UserController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/v1/users/{id}",
+     *     path="/api/v1/users/{id}",
      *     tags={"User"},
+     *     security={{"bearerAuth": {}}},
      *     summary="Get user by ID",
      *     description="Get user information by user ID",
      *     @OA\Parameter(
@@ -479,8 +485,9 @@ class UserController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/v1/users/getByToken",
+     *     path="/api/v1/users/getByToken",
      *     tags={"User"},
+     *     security={{"bearerAuth": {}}},
      *     summary="Get current user",
      *     description="Get information of the current authenticated user",
      *     security={{"bearerAuth":{}}},

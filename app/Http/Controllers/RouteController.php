@@ -35,8 +35,9 @@ class RouteController extends Controller
 {
     /**
      * @OA\Get(
-     *     path="/v1/routes/get",
+     *     path="/api/v1/routes/get",
      *     tags={"Route"},
+     *     security={{"bearerAuth": {}}},
      *     summary="Get routes",
      *     description="Get a list of routes",
      *     @OA\Parameter(
@@ -108,8 +109,9 @@ class RouteController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/v1/routes/search",
+     *     path="/api/v1/routes/search",
      *     tags={"Route"},
+     *     security={{"bearerAuth": {}}},
      *     summary="Search routes",
      *     description="Search for routes based on criteria",
      *     @OA\RequestBody(
@@ -165,8 +167,9 @@ class RouteController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/v1/routes/add",
+     *     path="/api/v1/routes/add",
      *     tags={"Route"},
+     *     security={{"bearerAuth": {}}},
      *     summary="Add route",
      *     description="Add a new route",
      *     @OA\RequestBody(
@@ -205,8 +208,9 @@ class RouteController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/v1/routes/delete/{id}",
+     *     path="/api/v1/routes/delete/{id}",
      *     tags={"Route"},
+     *     security={{"bearerAuth": {}}},
      *     summary="Delete route",
      *     description="Delete a route by ID",
      *     @OA\Parameter(
@@ -251,8 +255,9 @@ class RouteController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/v1/routes/{id}",
+     *     path="/api/v1/routes/{id}",
      *     tags={"Route"},
+     *     security={{"bearerAuth": {}}},
      *     summary="Get route by ID",
      *     description="Get route information by route ID",
      *     @OA\Parameter(
@@ -301,8 +306,9 @@ class RouteController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/v1/routes/user/{driverId}",
+     *     path="/api/v1/routes/user/{driverId}",
      *     tags={"Route"},
+     *     security={{"bearerAuth": {}}},
      *     summary="Get routes by driver ID",
      *     description="Get routes of a user by driver ID",
      *     @OA\Parameter(

@@ -26,7 +26,7 @@ class CarController extends Controller
 {
     /**
      * @OA\Post(
-     *     path="/v1/cars/store",
+     *     path="/api/v1/cars/store",
      *     summary="Create a new car",
      *     tags={"Car"},
      *     security={{"bearerAuth": {}}},
@@ -106,7 +106,7 @@ class CarController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/v1/cars/delete/{carId}",
+     *     path="/api/v1/cars/delete/{carId}",
      *     summary="Delete a car by ID",
      *     tags={"Car"},
      *     security={{"bearerAuth": {}}},
@@ -152,7 +152,7 @@ class CarController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/v1/cars/get",
+     *     path="/api/v1/cars/get",
      *     summary="Get all cars",
      *     tags={"Car"},
      *     security={{"bearerAuth": {}}},
@@ -188,7 +188,7 @@ class CarController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/v1/cars/update/{id}",
+     *     path="/api/v1/cars/update/{id}",
      *     summary="Update a car by ID",
      *     tags={"Car"},
      *     security={{"bearerAuth": {}}},

@@ -9,8 +9,51 @@ use App\Models\Notification;
 use App\Models\User;
 use Illuminate\Http\Request;
 
+/**
+ * @OA\Schema(
+ *      schema="Friend",
+ *      type="object",
+ *      title="Friend",
+ *      description="Friend model",
+ *      required={"id", "user_id", "friend_id"},
+ *      @OA\Property(property="id", format="uuid", type="string"),
+ *      @OA\Property(property="created_at", type="string", format="date-time"),
+ *      @OA\Property(property="updated_at", type="string", format="date-time"),
+ *      @OA\Property(property="user_id", format="uuid", type="string"),
+ *      @OA\Property(property="friend_id", format="uuid", type="string"),
+ * )
+ */
+
 class FriendController extends Controller
 {
+    /**
+     * @OA\Post(
+     *     path="/api/v1/friends/request/{user}",
+     *     summary="Send a friend request",
+     *     tags={"Friends"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+     *         name="user",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="string", example="user-id-12345")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Friend request sent",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Friend request sent.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Friend request already sent or accepted",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="error", type="string", example="Friend request already sent or accepted.")
+     *         )
+     *     )
+     * )
+     */
 
     public function sendFriendRequest($user)
     {
@@ -47,6 +90,35 @@ class FriendController extends Controller
         broadcast(new NotificationEvent($notificationEventData))->toOthers();
         return response()->json(['message' => 'Friend request sent.']);
     }
+
+    /**
+     * @OA\Post(
+     *     path="/api/v1/friends/accept/{user}",
+     *     summary="Accept a friend request",
+     *     tags={"Friends"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+     *         name="user",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="string", example="user-id-12345")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Friend request accepted",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Friend request accepted.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Friend request not found or already accepted",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="error", type="string", example="Friend request not found or already accepted.")
+     *         )
+     *     )
+     * )
+     */
 
     public function acceptFriendRequest($user)
     {
@@ -94,6 +166,35 @@ class FriendController extends Controller
         return response()->json(['message' => 'Friend request accepted.']);
     }
 
+    /**
+     * @OA\Delete(
+     *     path="/api/v1/friends/decline/{user}",
+     *     summary="Decline a friend request",
+     *     tags={"Friends"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+     *         name="user",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="string", example="user-id-12345")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Friend request declined",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Friend request declined.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Friend request not found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="error", type="string", example="Friend request not found.")
+     *         )
+     *     )
+     * )
+     */
+
     public function declineFriendRequest($user)
     {
         $receiver = auth()->user();
@@ -127,6 +228,35 @@ class FriendController extends Controller
         return response()->json(['message' => 'Friend request declined.']);
     }
 
+    /**
+     * @OA\Delete(
+     *     path="/api/v1/friends/cancel/{user}",
+     *     summary="Cancel a friend request",
+     *     tags={"Friends"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+     *         name="user",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="string", example="user-id-12345")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Friend request canceled",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Friend request canceled.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Friend request not found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="error", type="string", example="Friend request not found.")
+     *         )
+     *     )
+     * )
+     */
+
     public function cancelFriendRequest($user)
     {
         $sender = auth()->user();
@@ -142,6 +272,42 @@ class FriendController extends Controller
 
         return response()->json(['message' => 'Friend request canceled.']);
     }
+
+    /**
+     * @OA\Delete(
+     *     path="/api/v1/friends/unfriend/{user}",
+     *     summary="Unfriend a user",
+     *     tags={"Friends"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+     *         name="user",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="string", example="user-id-12345")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="User unfriended",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="You have unfriended the user.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="User not found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="error", type="string", example="User not found.")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="You are not friends with this user",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="error", type="string", example="You are not friends with this user.")
+     *         )
+     *     )
+     * )
+     */
 
     public function unfriend($user)
     {
@@ -165,6 +331,35 @@ class FriendController extends Controller
 
         return response()->json(['message' => 'You have unfriended the user.']);
     }
+
+    /**
+     * @OA\Get(
+     *     path="/api/v1/friends/get/{user}",
+     *     summary="Get friends of a user",
+     *     tags={"Friends"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Parameter(
+     *         name="user",
+     *         in="path",
+     *         required=true,
+     *         @OA\Schema(type="string", example="user-id-12345")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="List of friends",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="friends", type="array", @OA\Items(ref="#/components/schemas/User"))
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="User not found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="User not found")
+     *         )
+     *     )
+     * )
+     */
 
     public function getFriends(Request $request,$user)
     {

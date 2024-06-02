@@ -28,8 +28,9 @@ class ReservationController extends Controller
 {
     /**
      * @OA\Post(
-     *     path="/v1/reservations/create",
+     *     path="/api/v1/reservations/create",
      *     tags={"Reservation"},
+     *     security={{"bearerAuth": {}}},
      *     summary="Create reservation",
      *     description="Create a new reservation",
      *     @OA\RequestBody(
@@ -105,8 +106,9 @@ class ReservationController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/v1/reservations/update/{reservation}",
+     *     path="/api/v1/reservations/update/{reservation}",
      *     tags={"Reservation"},
+     *     security={{"bearerAuth": {}}},
      *     summary="Update reservation",
      *     description="Update the status of a reservation",
      *     @OA\Parameter(
@@ -177,8 +179,9 @@ class ReservationController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/v1/reservations/received",
+     *     path="/api/v1/reservations/received",
      *     tags={"Reservation"},
+     *     security={{"bearerAuth": {}}},
      *     summary="Get received requests",
      *     description="Get a list of received reservation requests",
      *     security={{"bearerAuth":{}}},
@@ -229,8 +232,9 @@ class ReservationController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/v1/reservations/sent",
+     *     path="/api/v1/reservations/sent",
      *     tags={"Reservation"},
+     *     security={{"bearerAuth": {}}},
      *     summary="Get sent requests",
      *     description="Get a list of sent reservation requests",
      *     security={{"bearerAuth":{}}},

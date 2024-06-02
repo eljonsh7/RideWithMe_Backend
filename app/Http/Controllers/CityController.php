@@ -24,8 +24,9 @@ class CityController extends Controller
 {
     /**
      * @OA\Post(
-     *     path="/v1/cities/store",
+     *     path="/api/v1/cities/store",
      *     tags={"City"},
+     *     security={{"bearerAuth": {}}},
      *     summary="Create city",
      *     description="Create a new city",
      *     @OA\RequestBody(
@@ -89,8 +90,9 @@ class CityController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/v1/cities/delete/{cityId}",
+     *     path="/api/v1/cities/delete/{cityId}",
      *     tags={"City"},
+     *     security={{"bearerAuth": {}}},
      *     summary="Delete city",
      *     description="Delete a city by ID",
      *     @OA\Parameter(
@@ -123,8 +125,9 @@ class CityController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/v1/cities/get",
+     *     path="/api/v1/cities/get",
      *     tags={"City"},
+     *     security={{"bearerAuth": {}}},
      *     summary="Get all cities",
      *     description="Get a list of all cities",
      *     @OA\Response(
@@ -153,8 +156,9 @@ class CityController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/v1/cities/update/{id}",
+     *     path="/api/v1/cities/update/{id}",
      *     tags={"City"},
+     *     security={{"bearerAuth": {}}},
      *     summary="Update city",
      *     description="Update a city by ID",
      *     @OA\Parameter(
@@ -221,8 +225,9 @@ class CityController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/v1/cities/{id}",
+     *     path="/api/v1/cities/{id}",
      *     tags={"City"},
+     *     security={{"bearerAuth": {}}},
      *     summary="Get city by ID",
      *     description="Get a city by its ID",
      *     @OA\Parameter(

@@ -12,9 +12,61 @@ use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 
+/**
+ * @OA\Schema(
+ *   schema="Message",
+ *   type="object",
+ *   required={"content", "type", "user_id"},
+ *   @OA\Property(property="id", type="string", format="uuid"),
+ *   @OA\Property(property="content", type="string"),
+ *   @OA\Property(property="type", type="string"),
+ *   @OA\Property(property="user_id", type="string", format="uuid"),
+ *   @OA\Property(property="created_at", type="string", format="date-time"),
+ *   @OA\Property(property="updated_at", type="string", format="date-time"),
+ * )
+ * 
+ *
+ *
+ * @OA\Schema(
+ *   schema="Conversation",
+ *   type="object",
+ *   required={"id", "sender_id", "recipient_id", "type", "unread_messages"},
+ *   @OA\Property(property="id", type="string", format="uuid", description="Conversation unique identifier"),
+ *   @OA\Property(property="sender_id", type="string", format="uuid", description="Sender unique identifier"),
+ *   @OA\Property(property="recipient_id", type="string", format="uuid", description="Recipient unique identifier"),
+ *   @OA\Property(property="type", type="string", description="Type of conversation (e.g., 'private', 'group')"),
+ *   @OA\Property(property="unread_messages", type="integer", description="Number of unread messages in the conversation")
+ * )
+ * */
+
 class ChatController extends Controller
 {
 
+    /**
+     * @OA\Post(
+     *   path="/api/v1/messages/send/{recipient}",
+     *   summary="Send a message",
+     *   tags={"Chat"},
+     *   security={{"bearerAuth": {}}},
+     *   @OA\Parameter(
+     *     name="recipient",
+     *     in="path",
+     *     required=true,
+     *     @OA\Schema(type="string", format="uuid")
+     *   ),
+     *   @OA\RequestBody(
+     *     required=true,
+     *     @OA\JsonContent(
+     *       required={"message", "type"},
+     *       @OA\Property(property="message", type="string"),
+     *       @OA\Property(property="type", type="string")
+     *     )
+     *   ),
+     *   @OA\Response(response=200, description="Message sent successfully", @OA\JsonContent(ref="#/components/schemas/Message")),
+     *   @OA\Response(response=422, description="Validation error"),
+     *   @OA\Response(response=401, description="Unauthenticated")
+     * )
+     */
     public function sendMessage(Request $request, $recipient)
     {
         $request->validate([
@@ -64,6 +116,29 @@ class ChatController extends Controller
         ]);
     }
 
+    /**
+     * @OA\Get(
+     *   path="/api/v1/messages/get/{recipient}/{type}",
+     *   summary="Get a conversation",
+     *   security={{"bearerAuth": {}}},
+     *   tags={"Chat"},
+     *   @OA\Parameter(
+     *     name="recipient",
+     *     in="path",
+     *     required=true,
+     *     @OA\Schema(type="string", format="uuid")
+     *   ),
+     *   @OA\Parameter(
+     *     name="type",
+     *     in="path",
+     *     required=true,
+     *     @OA\Schema(type="string")
+     *   ),
+     *   @OA\Response(response=200, description="Conversation fetched successfully", @OA\JsonContent(ref="#/components/schemas/Conversation")),
+     *   @OA\Response(response=404, description="Conversation not found"),
+     *   @OA\Response(response=401, description="Unauthenticated")
+     * )
+     */
 
     public function getConversation($recipient, $type)
     {
@@ -117,6 +192,16 @@ class ChatController extends Controller
         ], 200);
     }
 
+    /**
+     * @OA\Get(
+     *   path="/api/v1/messages/get/last",
+     *   summary="Get conversations with messages",
+     *   tags={"Chat"},
+     *   security={{"bearerAuth": {}}},
+     *   @OA\Response(response=200, description="Conversations fetched successfully", @OA\JsonContent(type="array", @OA\Items(ref="#/components/schemas/Conversation"))),
+     *   @OA\Response(response=401, description="Unauthenticated")
+     * )
+     */
     public function getConversationsWithMessages()
     {
         $user = auth()->user();
@@ -154,6 +239,23 @@ class ChatController extends Controller
         return response()->json(['conversations' => $conversationData]);
     }
 
+    /**
+     * @OA\Delete(
+     *   path="/api/v1/messages/delete/{recipient}",
+     *   summary="Delete a conversation",
+     *   tags={"Chat"},
+     *   security={{"bearerAuth": {}}},
+     *   @OA\Parameter(
+     *     name="recipient",
+     *     in="path",
+     *     required=true,
+     *     @OA\Schema(type="string", format="uuid")
+     *   ),
+     *   @OA\Response(response=200, description="Conversation deleted successfully"),
+     *   @OA\Response(response=404, description="Conversation not found"),
+     *   @OA\Response(response=401, description="Unauthenticated")
+     * )
+     */
 
     public function deleteConversation($recipient)
     {
@@ -176,6 +278,23 @@ class ChatController extends Controller
         return response()->json(['message' => 'Conversation deleted successfully']);
     }
 
+    /**
+     * @OA\Put(
+     *   path="/api/v1/messages/read/{recipient}",
+     *   summary="Mark a conversation as read",
+     *   tags={"Chat"},
+     *   security={{"bearerAuth": {}}},
+     *   @OA\Parameter(
+     *     name="recipient",
+     *     in="path",
+     *     required=true,
+     *     @OA\Schema(type="string", format="uuid")
+     *   ),
+     *   @OA\Response(response=200, description="Conversation marked as read"),
+     *   @OA\Response(response=404, description="Conversation not found"),
+     *   @OA\Response(response=401, description="Unauthenticated")
+     * )
+     */
 
     public function markConversationAsRead($recipient)
     {
