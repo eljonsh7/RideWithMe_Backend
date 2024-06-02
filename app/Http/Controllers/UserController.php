@@ -455,7 +455,7 @@ class UserController extends Controller
         $friendRequest = FriendRequest::where('sender_id', $id)->where('receiver_id', $authUser->id)
             ->orWhere('sender_id', $authUser->id)
             ->where('receiver_id', $id)->first();
-        
+
         $averageRating = Rating::where('rated_user_id', $id)
         ->avg('stars_number');
 
@@ -475,6 +475,20 @@ class UserController extends Controller
             'success' => true,
             'data' => $user
         ], 200);
+    }
+
+    public function searchUsers($name)
+    {
+        $user = auth()->user();
+
+        $users = User::where(function ($query) use ($name) {
+            $query->where('first_name', 'like', '%' . $name . '%')
+                ->orWhere('last_name', 'like', '%' . $name . '%');
+        })
+            ->where('id', '<>', $user->id)
+            ->get();
+
+        return response()->json(['users' => $users], 200);
     }
 
     /**
