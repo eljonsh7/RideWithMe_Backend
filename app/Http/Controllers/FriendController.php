@@ -178,7 +178,7 @@ class FriendController extends Controller
             $friend->makeHidden(['password','pivot','role','is_admin']);
         });
 
-        return response()->json(['friends' => $friends],200);
+        return response()->json(['message' => 'Friends fetched successfully', 'friends' => $friends],200);
     }
 
     public function getFriendRequests()
@@ -189,6 +189,6 @@ class FriendController extends Controller
             ->with('sender')
             ->get();
 
-        return response()->json(['requests' => $requests],200);
+        return response()->json(['message' => 'Requests fetched successfully', 'requests' => $requests],200);
     }
 }

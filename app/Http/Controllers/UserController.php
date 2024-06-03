@@ -104,7 +104,7 @@ class UserController extends Controller
         }
 
         $token = $user->createToken('auth_token')->plainTextToken;
-        return response()->json(['token' => $token, 'user' => $user]);
+        return response()->json(['message' => 'Login was successful.', 'token' => $token, 'user' => $user]);
     }
 
     /**
@@ -472,6 +472,7 @@ class UserController extends Controller
         }
         unset($user->password);
         return response()->json([
+            'message' => 'User fetched successfully.',
             'success' => true,
             'data' => $user
         ], 200);
@@ -488,7 +489,7 @@ class UserController extends Controller
             ->where('id', '<>', $user->id)
             ->get();
 
-        return response()->json(['users' => $users], 200);
+        return response()->json(['message' => 'Users fetched successfully', 'users' => $users], 200);
     }
 
     /**
@@ -528,7 +529,7 @@ class UserController extends Controller
         }
 
         $user->userCar = $userCar;
-        return response()->json($user);
+        return response()->json(['message' => 'Token is valid', 'user' => $user]);
     }
 
     public function attachCar(Request $request)

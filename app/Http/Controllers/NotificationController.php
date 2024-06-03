@@ -14,6 +14,7 @@ class NotificationController extends Controller
             ->get();
 
         return response()->json([
+            'message' => 'Notifications fetched successfully',
             'notifications' => $notifications->isEmpty() ? [] : $notifications
         ], 200);
     }

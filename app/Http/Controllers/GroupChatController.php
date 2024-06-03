@@ -69,6 +69,7 @@ class GroupChatController extends Controller
 
 
         return response()->json([
+            'message' => 'Members fetched successfully',
             'owner' => $formattedOwner,
             'members' => $formattedMembers,
         ]);
