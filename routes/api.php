@@ -32,11 +32,13 @@ Route::post('v1/signup', [UserController::class, 'signup']);
 
 Route::get('v1/routes/get', [RouteController::class,'index']);
 Route::get('v1/cities/get', [CityController::class, 'getAllCities']);
+Route::post('v1/routes/search', [RouteController::class,'search']);
 
 //Middleware routes
 Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
     Route::get('users/getByToken', [UserController::class, 'getUserByToken']);
     Route::get('users/get', [UserController::class, 'getAllUsers']);
+    Route::get('users/search/{name}', [UserController::class, 'searchUsers']);
     Route::get('users/{id}', [UserController::class, 'getUser']);
     Route::put('users/update/{userId}', [UserController::class, 'update']);
     Route::delete('users/delete/{userId}', [UserController::class, 'delete']);
@@ -94,6 +96,7 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
     Route::delete('friends/cancel/{user}',[FriendController::class,'cancelFriendRequest']);
     Route::delete('friends/unfriend/{user}',[FriendController::class,'unfriend']);
     Route::get('friends/get/{user}',[FriendController::class,'getFriends']);
+    Route::get('friends/requests/get',[FriendController::class,'getFriendRequests']);
 
     Route::post('ratings/add/{user}',[UserFeedbackController::class,'addRating']);
     Route::put('ratings/update/{user}',[UserFeedbackController::class,'updateRating']);
@@ -108,7 +111,5 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
     Route::delete('suggestions/delete/{suggestion}',[UserFeedbackController::class,'deleteSuggestion']);
     Route::get('suggestions/get',[UserFeedbackController::class,'getSuggestions']);
 
-    Route::get('notifications/get/{user}',[NotificationController::class,'getUserNotifications']);
-
+    Route::get('notifications/get',[NotificationController::class,'getUserNotifications']);
 });
-

@@ -104,7 +104,7 @@ class UserController extends Controller
         }
 
         $token = $user->createToken('auth_token')->plainTextToken;
-        return response()->json(['token' => $token, 'user' => $user]);
+        return response()->json(['message' => 'Login was successful.', 'token' => $token, 'user' => $user]);
     }
 
     /**
@@ -455,7 +455,7 @@ class UserController extends Controller
         $friendRequest = FriendRequest::where('sender_id', $id)->where('receiver_id', $authUser->id)
             ->orWhere('sender_id', $authUser->id)
             ->where('receiver_id', $id)->first();
-        
+
         $averageRating = Rating::where('rated_user_id', $id)
         ->avg('stars_number');
 
@@ -472,9 +472,24 @@ class UserController extends Controller
         }
         unset($user->password);
         return response()->json([
+            'message' => 'User fetched successfully.',
             'success' => true,
             'data' => $user
         ], 200);
+    }
+
+    public function searchUsers($name)
+    {
+        $user = auth()->user();
+
+        $users = User::where(function ($query) use ($name) {
+            $query->where('first_name', 'like', '%' . $name . '%')
+                ->orWhere('last_name', 'like', '%' . $name . '%');
+        })
+            ->where('id', '<>', $user->id)
+            ->get();
+
+        return response()->json(['message' => 'Users fetched successfully', 'users' => $users], 200);
     }
 
     /**
@@ -514,7 +529,7 @@ class UserController extends Controller
         }
 
         $user->userCar = $userCar;
-        return response()->json($user);
+        return response()->json(['message' => 'Token is valid', 'user' => $user]);
     }
 
     public function attachCar(Request $request)
