@@ -22,6 +22,8 @@ use Illuminate\Http\Request;
  *      @OA\Property(property="route_id", type="string", format="uuid", description="ID of the associated route"),
  *      @OA\Property(property="group_picture", type="string", description="URL of the group picture", nullable=true),
  *      @OA\Property(property="status", type="string", description="Status of the group"),
+ *      @OA\Property(property="created_at", type="string", format="date-time", description="Timestamp when the group was created"),
+ *      @OA\Property(property="updated_at", type="string", format="date-time", description="Timestamp when the group was updated"),
  * )
  */
 

@@ -16,11 +16,11 @@ use Illuminate\Http\Request;
  *      title="Friend",
  *      description="Friend model",
  *      required={"id", "user_id", "friend_id"},
- *      @OA\Property(property="id", format="uuid", type="string"),
- *      @OA\Property(property="created_at", type="string", format="date-time"),
- *      @OA\Property(property="updated_at", type="string", format="date-time"),
- *      @OA\Property(property="user_id", format="uuid", type="string"),
- *      @OA\Property(property="friend_id", format="uuid", type="string"),
+ *      @OA\Property(property="id", format="uuid", type="string", description="Primary key of the friend"),
+ *      @OA\Property(property="created_at", type="string", format="date-time", description="Timestamp when the friend was created"),
+ *      @OA\Property(property="updated_at", type="string", format="date-time", description="Timestamp when the friend was updated"),
+ *      @OA\Property(property="user_id", format="uuid", type="string", description="User ID"),
+ *      @OA\Property(property="friend_id", format="uuid", type="string", description="Friend ID"),
  * )
  */
 
@@ -375,6 +375,35 @@ class FriendController extends Controller
 
         return response()->json(['message' => 'Friends fetched successfully', 'friends' => $friends],200);
     }
+
+    /**
+     * @OA\Get(
+     *     path="/api/v1/friends/requests/get",
+     *     summary="Get friend requests for the authenticated user",
+     *     tags={"Friends"},
+     *     security={{"bearerAuth": {}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Requests fetched successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Requests fetched successfully"),
+     *             @OA\Property(
+     *                 property="requests",
+     *                 type="array",
+     *                 @OA\Items(ref="#/components/schemas/Friend")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="error", type="string", example="Unauthorized.")
+     *         )
+     *     )
+     * )
+     */
+
 
     public function getFriendRequests()
     {

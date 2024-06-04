@@ -21,14 +21,16 @@ use Illuminate\Support\Carbon;
  *     title="Route",
  *     description="Route model",
  *     required={"id", "driver_id", "city_from_id", "city_to_id", "location_id", "datetime", "passengers_number", "price"},
- *     @OA\Property(property="id", type="string", format="uuid", description="Route ID"),
+ *     @OA\Property(property="id", type="string", format="uuid", description="Primary key of the route"),
  *     @OA\Property(property="driver_id", type="string", format="uuid", description="Driver ID"),
  *     @OA\Property(property="city_from_id", type="string", format="uuid", description="City from ID"),
  *     @OA\Property(property="city_to_id", type="string", format="uuid", description="City to ID"),
  *     @OA\Property(property="location_id", type="string", format="uuid", description="Location ID"),
  *     @OA\Property(property="datetime", type="string", format="date-time", description="Date and time of the route"),
  *     @OA\Property(property="passengers_number", type="integer", description="Number of passengers"),
- *     @OA\Property(property="price", type="number", format="float", description="Price")
+ *     @OA\Property(property="price", type="number", format="float", description="Price"),
+ *     @OA\Property(property="created_at", type="string", format="date-time", description="Timestamp when the route was created"),
+ *     @OA\Property(property="updated_at", type="string", format="date-time", description="Timestamp when the route was updated"),
  * )
  */
 class RouteController extends Controller

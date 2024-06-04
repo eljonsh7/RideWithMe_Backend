@@ -17,11 +17,13 @@ use Illuminate\Http\Request;
  *     title="Reservation",
  *     description="Reservation model",
  *     required={"id", "user_id", "route_id", "status", "seat"},
- *     @OA\Property(property="id", type="string", format="uuid", description="Reservation ID"),
+ *     @OA\Property(property="id", type="string", format="uuid", description="Primary key of the reservation"),
  *     @OA\Property(property="user_id", type="string", format="uuid", description="ID of the user making the reservation"),
  *     @OA\Property(property="route_id", type="string", format="uuid", description="ID of the route being reserved"),
  *     @OA\Property(property="status", type="string", description="Status of the reservation"),
- *     @OA\Property(property="seat", type="integer", description="Seat number")
+ *     @OA\Property(property="seat", type="integer", description="Seat number"),
+ *     @OA\Property(property="created_at", type="string", format="date-time", description="Timestamp when the reservation was created"),
+ *     @OA\Property(property="updated_at", type="string", format="date-time", description="Timestamp when the reservation was updated"),
  * )
  */
 class ReservationController extends Controller
@@ -216,6 +218,39 @@ class ReservationController extends Controller
             return response()->json(['message' => 'An error occurred.', 'error' => $e->getMessage()], 500);
         }
     }
+
+    /**
+     * @OA\Get(
+     *     path="/api/v1/reservations/route/{routeId}",
+     *     tags={"Reservation"},
+     *     security={{"bearerAuth": {}}},
+     *     summary="Get reservations for a specific route",
+     *     description="Get a list of reservations for a specific route",
+     *     @OA\Parameter(
+     *         name="routeId",
+     *         in="path",
+     *         description="ID of the route",
+     *         required=true,
+     *         @OA\Schema(type="string", format="uuid")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Reservations fetched successfully",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(ref="#/components/schemas/Reservation")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="An error occurred",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="An error occurred."),
+     *             @OA\Property(property="error", type="string")
+     *         )
+     *     )
+     * )
+     */
 
     public function getRouteRequests($routeId)
     {

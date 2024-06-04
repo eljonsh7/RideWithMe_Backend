@@ -14,9 +14,11 @@ use Illuminate\Http\Request;
  *     title="City",
  *     description="City model",
  *     required={"id", "name", "country"},
- *     @OA\Property(property="id", type="string", format="uuid", description="City ID"),
+ *     @OA\Property(property="id", type="string", format="uuid", description="Primary key of the city"),
  *     @OA\Property(property="name", type="string", description="Name of the city"),
- *     @OA\Property(property="country", type="string", description="Country of the city")
+ *     @OA\Property(property="country", type="string", description="Country of the city"),
+ *     @OA\Property(property="created_at", type="string", format="date-time", description="Timestamp when the city was created"),
+ *     @OA\Property(property="updated_at", type="string", format="date-time", description="Timestamp when the city was updated"),
  * )
  */
 
@@ -82,7 +84,7 @@ class CityController extends Controller
             return response()->json(['message' => 'City created successfully', 'city' => $city], 201);
 
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json(['message' => 'An error occurred.', 'error' => $e->getMessage()], 500);
         }
 

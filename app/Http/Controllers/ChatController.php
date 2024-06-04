@@ -17,12 +17,12 @@ use Illuminate\Http\Request;
  *   schema="Message",
  *   type="object",
  *   required={"content", "type", "user_id"},
- *   @OA\Property(property="id", type="string", format="uuid"),
- *   @OA\Property(property="content", type="string"),
- *   @OA\Property(property="type", type="string"),
- *   @OA\Property(property="user_id", type="string", format="uuid"),
- *   @OA\Property(property="created_at", type="string", format="date-time"),
- *   @OA\Property(property="updated_at", type="string", format="date-time"),
+ *   @OA\Property(property="id", type="string", format="uuid", description="Primary key of the message"),
+ *   @OA\Property(property="content", type="string", description="Content of the message"),
+ *   @OA\Property(property="type", type="string", description="Type of the message"),
+ *   @OA\Property(property="user_id", type="string", format="uuid", description="User unique identifier"),
+ *   @OA\Property(property="created_at", type="string", format="date-time", description="Timestamp when the message was created"),
+ *   @OA\Property(property="updated_at", type="string", format="date-time", description="Timestamp when the message was updated"),
  * )
  * 
  *
@@ -31,11 +31,13 @@ use Illuminate\Http\Request;
  *   schema="Conversation",
  *   type="object",
  *   required={"id", "sender_id", "recipient_id", "type", "unread_messages"},
- *   @OA\Property(property="id", type="string", format="uuid", description="Conversation unique identifier"),
+ *   @OA\Property(property="id", type="string", format="uuid", description="Primary key of the conversation"),
  *   @OA\Property(property="sender_id", type="string", format="uuid", description="Sender unique identifier"),
  *   @OA\Property(property="recipient_id", type="string", format="uuid", description="Recipient unique identifier"),
  *   @OA\Property(property="type", type="string", description="Type of conversation (e.g., 'private', 'group')"),
- *   @OA\Property(property="unread_messages", type="integer", description="Number of unread messages in the conversation")
+ *   @OA\Property(property="unread_messages", type="integer", description="Number of unread messages in the conversation"),
+ *   @OA\Property(property="created_at", type="string", format="date-time", description="Timestamp when the conversation was created"),
+ *   @OA\Property(property="updated_at", type="string", format="date-time", description="Timestamp when the conversation was updated"),
  * )
  * */
 

@@ -1160,6 +1160,60 @@
                 ]
             }
         },
+        "/api/v1/friends/requests/get": {
+            "get": {
+                "tags": [
+                    "Friends"
+                ],
+                "summary": "Get friend requests for the authenticated user",
+                "operationId": "81f0b371366949c1d01daecaf37e5c03",
+                "responses": {
+                    "200": {
+                        "description": "Requests fetched successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Requests fetched successfully"
+                                        },
+                                        "requests": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Friend"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Unauthorized."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/v1/messages/group/store": {
             "post": {
                 "tags": [
@@ -2010,6 +2064,67 @@
                 ]
             }
         },
+        "/api/v1/reservations/route/{routeId}": {
+            "get": {
+                "tags": [
+                    "Reservation"
+                ],
+                "summary": "Get reservations for a specific route",
+                "description": "Get a list of reservations for a specific route",
+                "operationId": "c73048b192066fe5a7b093c5411db8b4",
+                "parameters": [
+                    {
+                        "name": "routeId",
+                        "in": "path",
+                        "description": "ID of the route",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Reservations fetched successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Reservation"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "An error occurred",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "An error occurred."
+                                        },
+                                        "error": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/v1/reservations/sent": {
             "get": {
                 "tags": [
@@ -2830,6 +2945,192 @@
                 ]
             }
         },
+        "/api/v1/users/car/attach": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Attach a car to the user",
+                "description": "Attach a car to the authenticated user",
+                "operationId": "2ce7a427e5101430cfde44b676111f51",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "car_id": {
+                                        "description": "ID of the car to attach",
+                                        "type": "string",
+                                        "format": "uuid"
+                                    },
+                                    "year": {
+                                        "description": "Car manufacturing year",
+                                        "type": "string"
+                                    },
+                                    "thumbnail": {
+                                        "description": "Thumbnail URL of the car",
+                                        "type": "string"
+                                    },
+                                    "color": {
+                                        "description": "Car color",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Car attached successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Car attached successfully."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Bad request"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "An error occurred",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "An error occurred."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/users/car/update": {
+            "put": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Update attached car details",
+                "description": "Update the details of the car attached to the authenticated user",
+                "operationId": "82d15c1338951fe2ce405bd730157a11",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "year": {
+                                        "description": "Car manufacturing year",
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "thumbnail": {
+                                        "description": "Thumbnail URL of the car",
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "color": {
+                                        "description": "Car color",
+                                        "type": "string",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Car updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Car updated successfully."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Car not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Car not found."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "An error occurred",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "An error occurred."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/api/v1/reports/add/{user}": {
             "post": {
                 "tags": [
@@ -3237,23 +3538,39 @@
                 ],
                 "properties": {
                     "id": {
+                        "description": "Primary key of the car",
                         "type": "string",
                         "format": "uuid"
                     },
                     "brand": {
+                        "description": "Brand of the car",
                         "type": "string"
                     },
                     "serie": {
+                        "description": "Serie of the car",
                         "type": "string"
                     },
                     "type": {
+                        "description": "Type of the car",
                         "type": "string"
                     },
                     "seats_number": {
+                        "description": "Seats number of the car",
                         "type": "integer"
                     },
                     "thumbnail": {
+                        "description": "Thumbnail of the car",
                         "type": "string"
+                    },
+                    "created_at": {
+                        "description": "Timestamp when the car was created",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Timestamp when the car was updated",
+                        "type": "string",
+                        "format": "date-time"
                     }
                 },
                 "type": "object"
@@ -3266,24 +3583,30 @@
                 ],
                 "properties": {
                     "id": {
+                        "description": "Primary key of the message",
                         "type": "string",
                         "format": "uuid"
                     },
                     "content": {
+                        "description": "Content of the message",
                         "type": "string"
                     },
                     "type": {
+                        "description": "Type of the message",
                         "type": "string"
                     },
                     "user_id": {
+                        "description": "User unique identifier",
                         "type": "string",
                         "format": "uuid"
                     },
                     "created_at": {
+                        "description": "Timestamp when the message was created",
                         "type": "string",
                         "format": "date-time"
                     },
                     "updated_at": {
+                        "description": "Timestamp when the message was updated",
                         "type": "string",
                         "format": "date-time"
                     }
@@ -3300,7 +3623,7 @@
                 ],
                 "properties": {
                     "id": {
-                        "description": "Conversation unique identifier",
+                        "description": "Primary key of the conversation",
                         "type": "string",
                         "format": "uuid"
                     },
@@ -3321,6 +3644,16 @@
                     "unread_messages": {
                         "description": "Number of unread messages in the conversation",
                         "type": "integer"
+                    },
+                    "created_at": {
+                        "description": "Timestamp when the conversation was created",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Timestamp when the conversation was updated",
+                        "type": "string",
+                        "format": "date-time"
                     }
                 },
                 "type": "object"
@@ -3335,7 +3668,7 @@
                 ],
                 "properties": {
                     "id": {
-                        "description": "City ID",
+                        "description": "Primary key of the city",
                         "type": "string",
                         "format": "uuid"
                     },
@@ -3346,6 +3679,16 @@
                     "country": {
                         "description": "Country of the city",
                         "type": "string"
+                    },
+                    "created_at": {
+                        "description": "Timestamp when the city was created",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Timestamp when the city was updated",
+                        "type": "string",
+                        "format": "date-time"
                     }
                 },
                 "type": "object"
@@ -3360,22 +3703,27 @@
                 ],
                 "properties": {
                     "id": {
+                        "description": "Primary key of the friend",
                         "type": "string",
                         "format": "uuid"
                     },
                     "created_at": {
+                        "description": "Timestamp when the friend was created",
                         "type": "string",
                         "format": "date-time"
                     },
                     "updated_at": {
+                        "description": "Timestamp when the friend was updated",
                         "type": "string",
                         "format": "date-time"
                     },
                     "user_id": {
+                        "description": "User ID",
                         "type": "string",
                         "format": "uuid"
                     },
                     "friend_id": {
+                        "description": "Friend ID",
                         "type": "string",
                         "format": "uuid"
                     }
@@ -3409,6 +3757,16 @@
                     "status": {
                         "description": "Status of the group",
                         "type": "string"
+                    },
+                    "created_at": {
+                        "description": "Timestamp when the group was created",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Timestamp when the group was updated",
+                        "type": "string",
+                        "format": "date-time"
                     }
                 },
                 "type": "object"
@@ -3424,7 +3782,7 @@
                 ],
                 "properties": {
                     "id": {
-                        "description": "Location ID",
+                        "description": "Primary key of the location",
                         "type": "string",
                         "format": "uuid"
                     },
@@ -3441,6 +3799,16 @@
                         "description": "Google Maps link for the location",
                         "type": "string",
                         "nullable": true
+                    },
+                    "created_at": {
+                        "description": "Timestamp when the location was created",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Timestamp when the location was updated",
+                        "type": "string",
+                        "format": "date-time"
                     }
                 },
                 "type": "object"
@@ -3479,6 +3847,11 @@
                         "description": "Timestamp when the notification was created",
                         "type": "string",
                         "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Timestamp when the notification was updated",
+                        "type": "string",
+                        "format": "date-time"
                     }
                 },
                 "type": "object"
@@ -3515,7 +3888,7 @@
                 ],
                 "properties": {
                     "id": {
-                        "description": "Reservation ID",
+                        "description": "Primary key of the reservation",
                         "type": "string",
                         "format": "uuid"
                     },
@@ -3536,6 +3909,16 @@
                     "seat": {
                         "description": "Seat number",
                         "type": "integer"
+                    },
+                    "created_at": {
+                        "description": "Timestamp when the reservation was created",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Timestamp when the reservation was updated",
+                        "type": "string",
+                        "format": "date-time"
                     }
                 },
                 "type": "object"
@@ -3555,7 +3938,7 @@
                 ],
                 "properties": {
                     "id": {
-                        "description": "Route ID",
+                        "description": "Primary key of the route",
                         "type": "string",
                         "format": "uuid"
                     },
@@ -3592,6 +3975,16 @@
                         "description": "Price",
                         "type": "number",
                         "format": "float"
+                    },
+                    "created_at": {
+                        "description": "Timestamp when the route was created",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Timestamp when the route was updated",
+                        "type": "string",
+                        "format": "date-time"
                     }
                 },
                 "type": "object"
@@ -3609,7 +4002,7 @@
                 ],
                 "properties": {
                     "id": {
-                        "description": "User ID",
+                        "description": "Primary key of the report user",
                         "type": "string",
                         "format": "uuid"
                     },
@@ -3638,6 +4031,68 @@
                     "role": {
                         "description": "Role of the user",
                         "type": "string"
+                    },
+                    "created_at": {
+                        "description": "Timestamp when the user was created",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Timestamp when the user was updated",
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "UserCar": {
+                "title": "UserCar",
+                "description": "UserCar model",
+                "required": [
+                    "id",
+                    "user_id",
+                    "car_id",
+                    "year",
+                    "thumbnail",
+                    "color"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "Primary key of the userCar ",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "user_id": {
+                        "description": "User ID",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "car_id": {
+                        "description": "Car ID",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "year": {
+                        "description": "Car manufacturing year",
+                        "type": "string"
+                    },
+                    "thumbnail": {
+                        "description": "Thumbnail URL of the car",
+                        "type": "string"
+                    },
+                    "color": {
+                        "description": "Car color",
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "description": "Timestamp when the user car was created",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Timestamp when the user car was updated",
+                        "type": "string",
+                        "format": "date-time"
                     }
                 },
                 "type": "object"

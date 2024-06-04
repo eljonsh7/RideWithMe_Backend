@@ -16,6 +16,7 @@ use App\Models\Notification;
  *      @OA\Property(property="sender_id", type="string", format="uuid", description="ID of the user who sent the notification"),
  *      @OA\Property(property="type", type="string", description="Type of the notification"),
  *      @OA\Property(property="created_at", type="string", format="date-time", description="Timestamp when the notification was created"),
+ *      @OA\Property(property="updated_at", type="string", format="date-time", description="Timestamp when the notification was updated"),
  * )
  */
 
