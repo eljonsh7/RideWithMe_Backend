@@ -21,22 +21,25 @@ use Illuminate\Support\Carbon;
  *     title="Route",
  *     description="Route model",
  *     required={"id", "driver_id", "city_from_id", "city_to_id", "location_id", "datetime", "passengers_number", "price"},
- *     @OA\Property(property="id", type="string", format="uuid", description="Route ID"),
+ *     @OA\Property(property="id", type="string", format="uuid", description="Primary key of the route"),
  *     @OA\Property(property="driver_id", type="string", format="uuid", description="Driver ID"),
  *     @OA\Property(property="city_from_id", type="string", format="uuid", description="City from ID"),
  *     @OA\Property(property="city_to_id", type="string", format="uuid", description="City to ID"),
  *     @OA\Property(property="location_id", type="string", format="uuid", description="Location ID"),
  *     @OA\Property(property="datetime", type="string", format="date-time", description="Date and time of the route"),
  *     @OA\Property(property="passengers_number", type="integer", description="Number of passengers"),
- *     @OA\Property(property="price", type="number", format="float", description="Price")
+ *     @OA\Property(property="price", type="number", format="float", description="Price"),
+ *     @OA\Property(property="created_at", type="string", format="date-time", description="Timestamp when the route was created"),
+ *     @OA\Property(property="updated_at", type="string", format="date-time", description="Timestamp when the route was updated"),
  * )
  */
 class RouteController extends Controller
 {
     /**
      * @OA\Get(
-     *     path="/v1/routes/get",
+     *     path="/api/v1/routes/get",
      *     tags={"Route"},
+     *     security={{"bearerAuth": {}}},
      *     summary="Get routes",
      *     description="Get a list of routes",
      *     @OA\Parameter(
@@ -108,8 +111,9 @@ class RouteController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/v1/routes/search",
+     *     path="/api/v1/routes/search",
      *     tags={"Route"},
+     *     security={{"bearerAuth": {}}},
      *     summary="Search routes",
      *     description="Search for routes based on criteria",
      *     @OA\RequestBody(
@@ -165,8 +169,9 @@ class RouteController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/v1/routes/add",
+     *     path="/api/v1/routes/add",
      *     tags={"Route"},
+     *     security={{"bearerAuth": {}}},
      *     summary="Add route",
      *     description="Add a new route",
      *     @OA\RequestBody(
@@ -205,8 +210,9 @@ class RouteController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/v1/routes/delete/{id}",
+     *     path="/api/v1/routes/delete/{id}",
      *     tags={"Route"},
+     *     security={{"bearerAuth": {}}},
      *     summary="Delete route",
      *     description="Delete a route by ID",
      *     @OA\Parameter(
@@ -251,8 +257,9 @@ class RouteController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/v1/routes/{id}",
+     *     path="/api/v1/routes/{id}",
      *     tags={"Route"},
+     *     security={{"bearerAuth": {}}},
      *     summary="Get route by ID",
      *     description="Get route information by route ID",
      *     @OA\Parameter(
@@ -301,8 +308,9 @@ class RouteController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/v1/routes/user/{driverId}",
+     *     path="/api/v1/routes/user/{driverId}",
      *     tags={"Route"},
+     *     security={{"bearerAuth": {}}},
      *     summary="Get routes by driver ID",
      *     description="Get routes of a user by driver ID",
      *     @OA\Parameter(

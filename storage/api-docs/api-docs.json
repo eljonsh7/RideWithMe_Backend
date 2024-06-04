@@ -5,13 +5,13 @@
         "version": "1.0.0"
     },
     "paths": {
-        "/v1/cars/store": {
+        "/api/v1/cars/store": {
             "post": {
                 "tags": [
                     "Car"
                 ],
                 "summary": "Create a new car",
-                "operationId": "07e4a1a13097897bd828b788764da9a3",
+                "operationId": "abaa70d3ac280d08594f854c3db01c3a",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -99,13 +99,13 @@
                 ]
             }
         },
-        "/v1/cars/delete/{carId}": {
+        "/api/v1/cars/delete/{carId}": {
             "delete": {
                 "tags": [
                     "Car"
                 ],
                 "summary": "Delete a car by ID",
-                "operationId": "b938d9ee65b49f7a76f7c634231d2a3a",
+                "operationId": "d8b6cd426928af35346927d7d8d1eba3",
                 "parameters": [
                     {
                         "name": "carId",
@@ -155,13 +155,13 @@
                 ]
             }
         },
-        "/v1/cars/get": {
+        "/api/v1/cars/get": {
             "get": {
                 "tags": [
                     "Car"
                 ],
                 "summary": "Get all cars",
-                "operationId": "d44aae9fbc6fd8de92e0626b67153258",
+                "operationId": "0b8ae591e0bc9a9fa9c768c2eb14c0b2",
                 "responses": {
                     "200": {
                         "description": "List of cars",
@@ -202,13 +202,13 @@
                 ]
             }
         },
-        "/v1/cars/update/{id}": {
+        "/api/v1/cars/update/{id}": {
             "put": {
                 "tags": [
                     "Car"
                 ],
                 "summary": "Update a car by ID",
-                "operationId": "0bca121ba398a40ee5b8e9bae6f4db78",
+                "operationId": "89af401a939e615fcadfe7fea91d3010",
                 "parameters": [
                     {
                         "name": "id",
@@ -311,14 +311,234 @@
                 ]
             }
         },
-        "/v1/cities/store": {
+        "/api/v1/messages/send/{recipient}": {
+            "post": {
+                "tags": [
+                    "Chat"
+                ],
+                "summary": "Send a message",
+                "operationId": "3bfece655c2f70b20f3b663138f32a6c",
+                "parameters": [
+                    {
+                        "name": "recipient",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "message",
+                                    "type"
+                                ],
+                                "properties": {
+                                    "message": {
+                                        "type": "string"
+                                    },
+                                    "type": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Message sent successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Message"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/messages/get/{recipient}/{type}": {
+            "get": {
+                "tags": [
+                    "Chat"
+                ],
+                "summary": "Get a conversation",
+                "operationId": "6cc5a2c4d9cd4379c1b9be6f2d91dc23",
+                "parameters": [
+                    {
+                        "name": "recipient",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    },
+                    {
+                        "name": "type",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Conversation fetched successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Conversation"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Conversation not found"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/messages/get/last": {
+            "get": {
+                "tags": [
+                    "Chat"
+                ],
+                "summary": "Get conversations with messages",
+                "operationId": "646b03d6b4244e748fbe4cf83fce3cf1",
+                "responses": {
+                    "200": {
+                        "description": "Conversations fetched successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Conversation"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/messages/delete/{recipient}": {
+            "delete": {
+                "tags": [
+                    "Chat"
+                ],
+                "summary": "Delete a conversation",
+                "operationId": "8856a12ddd17087a47e9d3713d99d2b2",
+                "parameters": [
+                    {
+                        "name": "recipient",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Conversation deleted successfully"
+                    },
+                    "404": {
+                        "description": "Conversation not found"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/messages/read/{recipient}": {
+            "put": {
+                "tags": [
+                    "Chat"
+                ],
+                "summary": "Mark a conversation as read",
+                "operationId": "c337e1956033e79b0a945bcdd97bac01",
+                "parameters": [
+                    {
+                        "name": "recipient",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Conversation marked as read"
+                    },
+                    "404": {
+                        "description": "Conversation not found"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/cities/store": {
             "post": {
                 "tags": [
                     "City"
                 ],
                 "summary": "Create city",
                 "description": "Create a new city",
-                "operationId": "7bb854416566f989cd3df99d7e61c0d2",
+                "operationId": "d6e9d084a4787f7e1ff8a8449b51e6d4",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -372,17 +592,22 @@
                     "500": {
                         "description": "An error occurred"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
-        "/v1/cities/delete/{cityId}": {
+        "/api/v1/cities/delete/{cityId}": {
             "delete": {
                 "tags": [
                     "City"
                 ],
                 "summary": "Delete city",
                 "description": "Delete a city by ID",
-                "operationId": "79f058f805e7becda57a72f3e3bc6160",
+                "operationId": "34557cfa8effbf27029ba64773f60f97",
                 "parameters": [
                     {
                         "name": "cityId",
@@ -401,17 +626,22 @@
                     "404": {
                         "description": "City not found"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
-        "/v1/cities/get": {
+        "/api/v1/cities/get": {
             "get": {
                 "tags": [
                     "City"
                 ],
                 "summary": "Get all cities",
                 "description": "Get a list of all cities",
-                "operationId": "526aeca0152262a83657d30390bdbc00",
+                "operationId": "db3b70eba1267ce6d813c02ffb770f14",
                 "responses": {
                     "200": {
                         "description": "Successful operation",
@@ -429,17 +659,22 @@
                     "500": {
                         "description": "An error occurred"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
-        "/v1/cities/update/{id}": {
+        "/api/v1/cities/update/{id}": {
             "put": {
                 "tags": [
                     "City"
                 ],
                 "summary": "Update city",
                 "description": "Update a city by ID",
-                "operationId": "006a9a9dee0b0c71927410b64212f1ec",
+                "operationId": "09f4650b941b36b2350d4f530ea6e83d",
                 "parameters": [
                     {
                         "name": "id",
@@ -504,17 +739,22 @@
                     "500": {
                         "description": "An error occurred"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
-        "/v1/cities/{id}": {
+        "/api/v1/cities/{id}": {
             "get": {
                 "tags": [
                     "City"
                 ],
                 "summary": "Get city by ID",
                 "description": "Get a city by its ID",
-                "operationId": "5a5b14cf9e83401d5482b18e718a66d0",
+                "operationId": "2136fae27f1cc7be560cd645ce673ee2",
                 "parameters": [
                     {
                         "name": "id",
@@ -540,17 +780,705 @@
                     "404": {
                         "description": "City not found"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
-        "/v1/locations/store": {
+        "/api/v1/friends/request/{user}": {
+            "post": {
+                "tags": [
+                    "Friends"
+                ],
+                "summary": "Send a friend request",
+                "operationId": "0046fbdd4ae211372841c79f39a9079a",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "user-id-12345"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Friend request sent",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Friend request sent."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Friend request already sent or accepted",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Friend request already sent or accepted."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/friends/accept/{user}": {
+            "post": {
+                "tags": [
+                    "Friends"
+                ],
+                "summary": "Accept a friend request",
+                "operationId": "7f2fddfa9cc4e12eb75eb5fb8c229586",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "user-id-12345"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Friend request accepted",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Friend request accepted."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Friend request not found or already accepted",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Friend request not found or already accepted."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/friends/decline/{user}": {
+            "delete": {
+                "tags": [
+                    "Friends"
+                ],
+                "summary": "Decline a friend request",
+                "operationId": "7bf5ef65d4895b2bbdac8b8661117645",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "user-id-12345"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Friend request declined",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Friend request declined."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Friend request not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Friend request not found."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/friends/cancel/{user}": {
+            "delete": {
+                "tags": [
+                    "Friends"
+                ],
+                "summary": "Cancel a friend request",
+                "operationId": "e998254942db3b9c1d36e2f1540f7a9b",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "user-id-12345"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Friend request canceled",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Friend request canceled."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Friend request not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Friend request not found."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/friends/unfriend/{user}": {
+            "delete": {
+                "tags": [
+                    "Friends"
+                ],
+                "summary": "Unfriend a user",
+                "operationId": "579592493172ba3b8813575676674584",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "user-id-12345"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User unfriended",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "You have unfriended the user."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "User not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "User not found."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "You are not friends with this user",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "You are not friends with this user."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/friends/get/{user}": {
+            "get": {
+                "tags": [
+                    "Friends"
+                ],
+                "summary": "Get friends of a user",
+                "operationId": "602ce5fc31f34b1534051b16d48e1de6",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "user-id-12345"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of friends",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "friends": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/User"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "User not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "User not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/friends/requests/get": {
+            "get": {
+                "tags": [
+                    "Friends"
+                ],
+                "summary": "Get friend requests for the authenticated user",
+                "operationId": "81f0b371366949c1d01daecaf37e5c03",
+                "responses": {
+                    "200": {
+                        "description": "Requests fetched successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Requests fetched successfully"
+                                        },
+                                        "requests": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Friend"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Unauthorized."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/messages/group/store": {
+            "post": {
+                "tags": [
+                    "Group Chat"
+                ],
+                "summary": "Create a new group",
+                "description": "Creates a new group and initializes a conversation for the group.",
+                "operationId": "storeGroup",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "route_id"
+                                ],
+                                "properties": {
+                                    "route_id": {
+                                        "description": "ID of the route",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Group created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Group created successfully"
+                                        },
+                                        "group_details": {
+                                            "$ref": "#/components/schemas/Group"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "The given data was invalid."
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/members/get/{group}": {
+            "get": {
+                "tags": [
+                    "Group Chat"
+                ],
+                "summary": "Retrieve all group members",
+                "description": "Retrieves all members of the specified group.",
+                "operationId": "retrieveAllGroupMembers",
+                "parameters": [
+                    {
+                        "name": "group",
+                        "in": "path",
+                        "description": "ID of the group",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Group members retrieved successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "owner": {
+                                            "$ref": "#/components/schemas/User"
+                                        },
+                                        "members": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/User"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "User is not a member of the group",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "You are not a member of this group"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Group not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Group not found."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "api/v1/messages/group/send/{group}": {
+            "post": {
+                "tags": [
+                    "Group Chat"
+                ],
+                "summary": "Send a message to a group",
+                "description": "Sends a message to the specified group.",
+                "operationId": "sendMessageToGroup",
+                "parameters": [
+                    {
+                        "name": "group",
+                        "in": "path",
+                        "description": "ID of the group",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "message",
+                                    "type"
+                                ],
+                                "properties": {
+                                    "message": {
+                                        "description": "Message content",
+                                        "type": "string"
+                                    },
+                                    "type": {
+                                        "description": "Type of the message",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Message sent successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "$ref": "#/components/schemas/Message"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "User is not a member of the group",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "You are not a member of this group"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "An error occurred",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "An error occurred."
+                                        },
+                                        "error": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/locations/store": {
             "post": {
                 "tags": [
                     "Location"
                 ],
                 "summary": "Create location",
                 "description": "Create a new location",
-                "operationId": "41d63b632fece1164d525309c217c322",
+                "operationId": "23b056702f56310d4b40f74a84313e44",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -608,17 +1536,22 @@
                     "500": {
                         "description": "An error occurred"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
-        "/v1/locations/delete/{locationId}": {
+        "/api/v1/locations/delete/{locationId}": {
             "delete": {
                 "tags": [
                     "Location"
                 ],
                 "summary": "Delete location",
                 "description": "Delete a location",
-                "operationId": "de5da3761492087262ddc3e13b44201d",
+                "operationId": "9986458cb737e5cb8f589d6cfdc7c91d",
                 "parameters": [
                     {
                         "name": "locationId",
@@ -650,17 +1583,22 @@
                     "404": {
                         "description": "Location not found"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
-        "/v1/locations/get/{cityId}": {
+        "/api/v1/locations/get/{cityId}": {
             "get": {
                 "tags": [
                     "Location"
                 ],
                 "summary": "Get all locations",
                 "description": "Get all locations for a specific city",
-                "operationId": "84bbdf9c0c8e8bc5e61479e20b9334ba",
+                "operationId": "2f6d65f8b4604db32a8806c8e0e9a72f",
                 "parameters": [
                     {
                         "name": "cityId",
@@ -694,17 +1632,22 @@
                     "500": {
                         "description": "An error occurred"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
-        "/v1/locations/{id}": {
+        "/api/v1/locations/{id}": {
             "get": {
                 "tags": [
                     "Location"
                 ],
                 "summary": "Get location",
                 "description": "Get a location by ID",
-                "operationId": "9e9cc408824f4e1209e723400eb7622c",
+                "operationId": "19e89c0274644f6ee5ef050ca9efec36",
                 "parameters": [
                     {
                         "name": "id",
@@ -730,17 +1673,22 @@
                     "404": {
                         "description": "Location not found"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
-        "/v1/locations/update/{id}": {
+        "/api/v1/locations/update/{id}": {
             "put": {
                 "tags": [
                     "Location"
                 ],
                 "summary": "Update location",
                 "description": "Update a location by ID",
-                "operationId": "a4383670cdf9680302d03e171a4ec5e5",
+                "operationId": "381157d00be7e0e46a7d408059ee4d51",
                 "parameters": [
                     {
                         "name": "id",
@@ -804,16 +1752,21 @@
                     "500": {
                         "description": "An error occurred"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
-        "/v1/media/store": {
+        "/api/v1/media/store": {
             "post": {
                 "tags": [
                     "Media"
                 ],
                 "summary": "Store media file",
-                "operationId": "b0fcf15f1ce8dc4ec8a6e6a14a37aca2",
+                "operationId": "ff3905e5b7eef5ee8a7d5f1713fc2506",
                 "requestBody": {
                     "description": "Media file to store",
                     "required": true,
@@ -853,17 +1806,103 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
-        "/v1/reservations/create": {
+        "/api/v1/notifications/get/{user}": {
+            "get": {
+                "tags": [
+                    "Notifications"
+                ],
+                "summary": "Get user notifications",
+                "description": "Retrieve all notifications for a specific user.",
+                "operationId": "getUserNotifications",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "path",
+                        "description": "ID of the user",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Notification"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "User not found"
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/report/reasons/get": {
+            "get": {
+                "tags": [
+                    "ReportReasons"
+                ],
+                "summary": "Get all report reasons",
+                "description": "Retrieve a list of all report reasons.",
+                "operationId": "getReportReasons",
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ReportReason"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/reservations/create": {
             "post": {
                 "tags": [
                     "Reservation"
                 ],
                 "summary": "Create reservation",
                 "description": "Create a new reservation",
-                "operationId": "961ef8073829db0620c6b58c35f6ea51",
+                "operationId": "cb5c986faf5b25bd6a87358cd902758b",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -918,17 +1957,22 @@
                     "500": {
                         "description": "An error occurred"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
-        "/v1/reservations/update/{reservation}": {
+        "/api/v1/reservations/update/{reservation}": {
             "put": {
                 "tags": [
                     "Reservation"
                 ],
                 "summary": "Update reservation",
                 "description": "Update the status of a reservation",
-                "operationId": "8ed3b80529266dde41c8ce939ed7dd23",
+                "operationId": "d0483df571dd11a930c17cffd9ab7e27",
                 "parameters": [
                     {
                         "name": "reservation",
@@ -979,17 +2023,22 @@
                     "500": {
                         "description": "An error occurred"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
-        "/v1/reservations/received": {
+        "/api/v1/reservations/received": {
             "get": {
                 "tags": [
                     "Reservation"
                 ],
                 "summary": "Get received requests",
                 "description": "Get a list of received reservation requests",
-                "operationId": "fe6ce8511e5a0393dac8488d93a46887",
+                "operationId": "bdb6e848d2f8ded36eab288a54d7c005",
                 "responses": {
                     "200": {
                         "description": "Successful operation",
@@ -1015,14 +2064,75 @@
                 ]
             }
         },
-        "/v1/reservations/sent": {
+        "/api/v1/reservations/route/{routeId}": {
+            "get": {
+                "tags": [
+                    "Reservation"
+                ],
+                "summary": "Get reservations for a specific route",
+                "description": "Get a list of reservations for a specific route",
+                "operationId": "c73048b192066fe5a7b093c5411db8b4",
+                "parameters": [
+                    {
+                        "name": "routeId",
+                        "in": "path",
+                        "description": "ID of the route",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Reservations fetched successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Reservation"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "An error occurred",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "An error occurred."
+                                        },
+                                        "error": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/reservations/sent": {
             "get": {
                 "tags": [
                     "Reservation"
                 ],
                 "summary": "Get sent requests",
                 "description": "Get a list of sent reservation requests",
-                "operationId": "6652385cb5dc34987089125669521e5b",
+                "operationId": "50305c2936b2e8fca39d97c930fa15b3",
                 "responses": {
                     "200": {
                         "description": "Successful operation",
@@ -1048,14 +2158,14 @@
                 ]
             }
         },
-        "/v1/routes/get": {
+        "/api/v1/routes/get": {
             "get": {
                 "tags": [
                     "Route"
                 ],
                 "summary": "Get routes",
                 "description": "Get a list of routes",
-                "operationId": "44add079626e13f5b4de784a410e98c0",
+                "operationId": "f74de677df3f9db8c9ab3d9b01c63e1e",
                 "parameters": [
                     {
                         "name": "pageSize",
@@ -1095,17 +2205,22 @@
                     "500": {
                         "description": "An error occurred"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
-        "/v1/routes/search": {
+        "/api/v1/routes/search": {
             "post": {
                 "tags": [
                     "Route"
                 ],
                 "summary": "Search routes",
                 "description": "Search for routes based on criteria",
-                "operationId": "a6f16465f7a09098e6ca678931d97a93",
+                "operationId": "c6af3baaf486d08a932e387090e06874",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -1153,17 +2268,22 @@
                     "500": {
                         "description": "An error occurred"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
-        "/v1/routes/add": {
+        "/api/v1/routes/add": {
             "post": {
                 "tags": [
                     "Route"
                 ],
                 "summary": "Add route",
                 "description": "Add a new route",
-                "operationId": "33eef67e52088be06e32ef4a30122716",
+                "operationId": "514a98b4ec5a153d7cfcf805c2c68c51",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -1188,17 +2308,22 @@
                     "422": {
                         "description": "Validation error"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
-        "/v1/routes/delete/{id}": {
+        "/api/v1/routes/delete/{id}": {
             "delete": {
                 "tags": [
                     "Route"
                 ],
                 "summary": "Delete route",
                 "description": "Delete a route by ID",
-                "operationId": "253d173a3fe3657ff0221d76bab92b4f",
+                "operationId": "6cdd1f5464d0885d6eaca6cd8900d2ea",
                 "parameters": [
                     {
                         "name": "id",
@@ -1234,17 +2359,22 @@
                     "404": {
                         "description": "Route not found"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
-        "/v1/routes/{id}": {
+        "/api/v1/routes/{id}": {
             "get": {
                 "tags": [
                     "Route"
                 ],
                 "summary": "Get route by ID",
                 "description": "Get route information by route ID",
-                "operationId": "cf0b92723539411f52881c5cfd68a9b3",
+                "operationId": "8b6937e35e96fa23d72cb3ae45d05998",
                 "parameters": [
                     {
                         "name": "id",
@@ -1270,17 +2400,22 @@
                     "404": {
                         "description": "Route not found"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
-        "/v1/routes/user/{driverId}": {
+        "/api/v1/routes/user/{driverId}": {
             "get": {
                 "tags": [
                     "Route"
                 ],
                 "summary": "Get routes by driver ID",
                 "description": "Get routes of a user by driver ID",
-                "operationId": "6a4c4a5ff79487aaca0e9f0d97bc99bd",
+                "operationId": "d1937a6e33ee6868910080df9efd95d6",
                 "parameters": [
                     {
                         "name": "driverId",
@@ -1309,17 +2444,22 @@
                     "404": {
                         "description": "No routes found for the driver"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
-        "/v1/login": {
+        "/api/v1/login": {
             "post": {
                 "tags": [
                     "User"
                 ],
                 "summary": "Login user",
                 "description": "Login a user with email and password",
-                "operationId": "369a19a43344dc5ada9a491fe03c616c",
+                "operationId": "d7d51829be22c07b1dbdeca806fd4354",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -1369,14 +2509,14 @@
                 }
             }
         },
-        "/v1/signup": {
+        "/api/v1/signup": {
             "post": {
                 "tags": [
                     "User"
                 ],
                 "summary": "Signup user",
                 "description": "Signup a new user",
-                "operationId": "0d9ef8b092a986447e51d46d4d3bfecf",
+                "operationId": "b25708072ca3a75b5d9b1a35f331bbad",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -1435,14 +2575,14 @@
                 }
             }
         },
-        "/v1/users/get": {
+        "/api/v1/users/get": {
             "get": {
                 "tags": [
                     "User"
                 ],
                 "summary": "Get all users",
                 "description": "Get a list of all users",
-                "operationId": "7ad7a3d6f746ac9630976ac26db08afe",
+                "operationId": "1079637514556d3877e0955a10e7a012",
                 "responses": {
                     "200": {
                         "description": "Successful operation",
@@ -1465,17 +2605,22 @@
                     "500": {
                         "description": "An error occurred"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
-        "/v1/users/update/{userId}": {
+        "/api/v1/users/update/{userId}": {
             "put": {
                 "tags": [
                     "User"
                 ],
                 "summary": "Update user",
                 "description": "Update user details",
-                "operationId": "d42ef4ae450bbdc877e05c370938a2f2",
+                "operationId": "7c2f15d6b6dc862606e58c3a6545e48e",
                 "parameters": [
                     {
                         "name": "userId",
@@ -1532,17 +2677,22 @@
                     "500": {
                         "description": "An error occurred"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
-        "/v1/users/delete/{userId}": {
+        "/api/v1/users/delete/{userId}": {
             "delete": {
                 "tags": [
                     "User"
                 ],
                 "summary": "Delete user",
                 "description": "Delete a user by ID",
-                "operationId": "df04830fb1d24b43d479f014f4bdfc20",
+                "operationId": "dab1871f1d115d3fc7df49c17fc1c495",
                 "parameters": [
                     {
                         "name": "userId",
@@ -1572,17 +2722,22 @@
                     "404": {
                         "description": "User not found"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
-        "/v1/users/ban/{userId}": {
+        "/api/v1/users/ban/{userId}": {
             "post": {
                 "tags": [
                     "User"
                 ],
                 "summary": "Ban user",
                 "description": "Ban a user by ID",
-                "operationId": "f37d84d2b3938e6cfa14d5fab3b2cbf4",
+                "operationId": "78afb0e084eb9e06579ac272a51bdbd6",
                 "parameters": [
                     {
                         "name": "userId",
@@ -1628,17 +2783,22 @@
                     "404": {
                         "description": "User not found"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
-        "/v1/users/ban/remove/{userId}": {
+        "/api/v1/users/ban/remove/{userId}": {
             "delete": {
                 "tags": [
                     "User"
                 ],
                 "summary": "Remove ban from user",
                 "description": "Remove ban from a user by ID",
-                "operationId": "da446df75c08b11a578511515326fb2e",
+                "operationId": "5df8273345ef3b376d5debd3d2509035",
                 "parameters": [
                     {
                         "name": "userId",
@@ -1668,17 +2828,22 @@
                     "404": {
                         "description": "Ban not found"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
-        "/v1/users/{id}": {
+        "/api/v1/users/{id}": {
             "get": {
                 "tags": [
                     "User"
                 ],
                 "summary": "Get user by ID",
                 "description": "Get user information by user ID",
-                "operationId": "59f74f52e8e9e8e050e928c8ae5f965d",
+                "operationId": "5c0dcb916875f83e4721e8432e165a9c",
                 "parameters": [
                     {
                         "name": "id",
@@ -1729,17 +2894,22 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
             }
         },
-        "/v1/users/getByToken": {
+        "/api/v1/users/getByToken": {
             "get": {
                 "tags": [
                     "User"
                 ],
                 "summary": "Get current user",
                 "description": "Get information of the current authenticated user",
-                "operationId": "e14f54b644516b86e40e97546c375975",
+                "operationId": "ca8ee9a1ada126a36acfe025a535b740",
                 "responses": {
                     "200": {
                         "description": "Successful operation",
@@ -1774,6 +2944,583 @@
                     }
                 ]
             }
+        },
+        "/api/v1/users/car/attach": {
+            "post": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Attach a car to the user",
+                "description": "Attach a car to the authenticated user",
+                "operationId": "2ce7a427e5101430cfde44b676111f51",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "car_id": {
+                                        "description": "ID of the car to attach",
+                                        "type": "string",
+                                        "format": "uuid"
+                                    },
+                                    "year": {
+                                        "description": "Car manufacturing year",
+                                        "type": "string"
+                                    },
+                                    "thumbnail": {
+                                        "description": "Thumbnail URL of the car",
+                                        "type": "string"
+                                    },
+                                    "color": {
+                                        "description": "Car color",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Car attached successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Car attached successfully."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Bad request"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "An error occurred",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "An error occurred."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/users/car/update": {
+            "put": {
+                "tags": [
+                    "User"
+                ],
+                "summary": "Update attached car details",
+                "description": "Update the details of the car attached to the authenticated user",
+                "operationId": "82d15c1338951fe2ce405bd730157a11",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "year": {
+                                        "description": "Car manufacturing year",
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "thumbnail": {
+                                        "description": "Thumbnail URL of the car",
+                                        "type": "string",
+                                        "nullable": true
+                                    },
+                                    "color": {
+                                        "description": "Car color",
+                                        "type": "string",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Car updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Car updated successfully."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Car not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Car not found."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "An error occurred",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "An error occurred."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/reports/add/{user}": {
+            "post": {
+                "tags": [
+                    "Reports"
+                ],
+                "summary": "Add a report",
+                "description": "Create a new report for a user.",
+                "operationId": "addReport",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "path",
+                        "description": "ID of the user to report",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "reason": {
+                                        "description": "Reason for the report",
+                                        "type": "integer"
+                                    },
+                                    "description": {
+                                        "description": "Description of the report",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Report added successfully"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/reports/delete/{user}": {
+            "delete": {
+                "tags": [
+                    "Reports"
+                ],
+                "summary": "Delete a report",
+                "description": "Delete a report made by the authenticated user.",
+                "operationId": "deleteReport",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "path",
+                        "description": "ID of the reported user",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Report deleted successfully"
+                    },
+                    "404": {
+                        "description": "Report not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/ratings/add/{user}": {
+            "post": {
+                "tags": [
+                    "Ratings"
+                ],
+                "summary": "Add a rating",
+                "description": "Create a new rating for a user.",
+                "operationId": "addRating",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "path",
+                        "description": "ID of the user to rate",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "stars_number": {
+                                        "description": "Number of stars",
+                                        "type": "integer"
+                                    },
+                                    "description": {
+                                        "description": "Description of the rating",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Rating added successfully"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/ratings/update/{user}": {
+            "put": {
+                "tags": [
+                    "Ratings"
+                ],
+                "summary": "Update a rating",
+                "description": "Update an existing rating for a user.",
+                "operationId": "updateRating",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "path",
+                        "description": "ID of the user to rate",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "stars_number": {
+                                        "description": "Number of stars",
+                                        "type": "integer"
+                                    },
+                                    "description": {
+                                        "description": "Description of the rating",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Rating updated successfully"
+                    },
+                    "404": {
+                        "description": "Rating not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/ratings/delete/{user}": {
+            "delete": {
+                "tags": [
+                    "Ratings"
+                ],
+                "summary": "Delete a rating",
+                "description": "Delete an existing rating for a user.",
+                "operationId": "deleteRating",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "path",
+                        "description": "ID of the rated user",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Rating deleted successfully"
+                    },
+                    "404": {
+                        "description": "Rating not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/ratings/get/{user}": {
+            "get": {
+                "tags": [
+                    "Ratings"
+                ],
+                "summary": "Get all ratings for a user",
+                "description": "Retrieve all ratings for a user.",
+                "operationId": "getRatings",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "path",
+                        "description": "ID of the rated user",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Ratings fetched successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Rating"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Rating not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/suggestions/add": {
+            "post": {
+                "tags": [
+                    "Suggestions"
+                ],
+                "summary": "Add a suggestion",
+                "description": "Create a new suggestion.",
+                "operationId": "addSuggestion",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "suggestion_type": {
+                                        "description": "Type of the suggestion",
+                                        "type": "string"
+                                    },
+                                    "suggestion_content": {
+                                        "description": "Content of the suggestion",
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Suggestion added successfully"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/suggestions/delete/{suggestion}": {
+            "delete": {
+                "tags": [
+                    "Suggestions"
+                ],
+                "summary": "Delete a suggestion",
+                "description": "Delete an existing suggestion.",
+                "operationId": "deleteSuggestion",
+                "parameters": [
+                    {
+                        "name": "suggestion",
+                        "in": "path",
+                        "description": "ID of the suggestion",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "uuid"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Suggestion deleted successfully"
+                    },
+                    "404": {
+                        "description": "Suggestion not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/api/v1/suggestions/get": {
+            "get": {
+                "tags": [
+                    "Suggestions"
+                ],
+                "summary": "Get all suggestions",
+                "description": "Retrieve all suggestions.",
+                "operationId": "getSuggestions",
+                "responses": {
+                    "200": {
+                        "description": "Suggestions fetched successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Suggestion"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No suggestions found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
         }
     },
     "components": {
@@ -1791,23 +3538,122 @@
                 ],
                 "properties": {
                     "id": {
+                        "description": "Primary key of the car",
                         "type": "string",
                         "format": "uuid"
                     },
                     "brand": {
+                        "description": "Brand of the car",
                         "type": "string"
                     },
                     "serie": {
+                        "description": "Serie of the car",
                         "type": "string"
                     },
                     "type": {
+                        "description": "Type of the car",
                         "type": "string"
                     },
                     "seats_number": {
+                        "description": "Seats number of the car",
                         "type": "integer"
                     },
                     "thumbnail": {
+                        "description": "Thumbnail of the car",
                         "type": "string"
+                    },
+                    "created_at": {
+                        "description": "Timestamp when the car was created",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Timestamp when the car was updated",
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "Message": {
+                "required": [
+                    "content",
+                    "type",
+                    "user_id"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "Primary key of the message",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "content": {
+                        "description": "Content of the message",
+                        "type": "string"
+                    },
+                    "type": {
+                        "description": "Type of the message",
+                        "type": "string"
+                    },
+                    "user_id": {
+                        "description": "User unique identifier",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "created_at": {
+                        "description": "Timestamp when the message was created",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Timestamp when the message was updated",
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "Conversation": {
+                "required": [
+                    "id",
+                    "sender_id",
+                    "recipient_id",
+                    "type",
+                    "unread_messages"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "Primary key of the conversation",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "sender_id": {
+                        "description": "Sender unique identifier",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "recipient_id": {
+                        "description": "Recipient unique identifier",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "type": {
+                        "description": "Type of conversation (e.g., 'private', 'group')",
+                        "type": "string"
+                    },
+                    "unread_messages": {
+                        "description": "Number of unread messages in the conversation",
+                        "type": "integer"
+                    },
+                    "created_at": {
+                        "description": "Timestamp when the conversation was created",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Timestamp when the conversation was updated",
+                        "type": "string",
+                        "format": "date-time"
                     }
                 },
                 "type": "object"
@@ -1822,7 +3668,7 @@
                 ],
                 "properties": {
                     "id": {
-                        "description": "City ID",
+                        "description": "Primary key of the city",
                         "type": "string",
                         "format": "uuid"
                     },
@@ -1833,6 +3679,94 @@
                     "country": {
                         "description": "Country of the city",
                         "type": "string"
+                    },
+                    "created_at": {
+                        "description": "Timestamp when the city was created",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Timestamp when the city was updated",
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "Friend": {
+                "title": "Friend",
+                "description": "Friend model",
+                "required": [
+                    "id",
+                    "user_id",
+                    "friend_id"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "Primary key of the friend",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "created_at": {
+                        "description": "Timestamp when the friend was created",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Timestamp when the friend was updated",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "user_id": {
+                        "description": "User ID",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "friend_id": {
+                        "description": "Friend ID",
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                },
+                "type": "object"
+            },
+            "Group": {
+                "title": "Group",
+                "description": "Group model",
+                "required": [
+                    "id",
+                    "route_id",
+                    "status"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "Primary key of the group",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "route_id": {
+                        "description": "ID of the associated route",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "group_picture": {
+                        "description": "URL of the group picture",
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "status": {
+                        "description": "Status of the group",
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "description": "Timestamp when the group was created",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Timestamp when the group was updated",
+                        "type": "string",
+                        "format": "date-time"
                     }
                 },
                 "type": "object"
@@ -1848,7 +3782,7 @@
                 ],
                 "properties": {
                     "id": {
-                        "description": "Location ID",
+                        "description": "Primary key of the location",
                         "type": "string",
                         "format": "uuid"
                     },
@@ -1865,6 +3799,79 @@
                         "description": "Google Maps link for the location",
                         "type": "string",
                         "nullable": true
+                    },
+                    "created_at": {
+                        "description": "Timestamp when the location was created",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Timestamp when the location was updated",
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "Notification": {
+                "title": "Notification",
+                "description": "Notification model",
+                "required": [
+                    "id",
+                    "user_id",
+                    "sender_id",
+                    "type",
+                    "created_at"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "Primary key of the notification",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "user_id": {
+                        "description": "ID of the user who receives the notification",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "sender_id": {
+                        "description": "ID of the user who sent the notification",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "type": {
+                        "description": "Type of the notification",
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "description": "Timestamp when the notification was created",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Timestamp when the notification was updated",
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "ReportReason": {
+                "title": "ReportReason",
+                "description": "ReportReason model",
+                "required": [
+                    "id",
+                    "reason"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "Primary key of the report reason",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "reason": {
+                        "description": "Description of the report reason",
+                        "type": "string"
                     }
                 },
                 "type": "object"
@@ -1881,7 +3888,7 @@
                 ],
                 "properties": {
                     "id": {
-                        "description": "Reservation ID",
+                        "description": "Primary key of the reservation",
                         "type": "string",
                         "format": "uuid"
                     },
@@ -1902,6 +3909,16 @@
                     "seat": {
                         "description": "Seat number",
                         "type": "integer"
+                    },
+                    "created_at": {
+                        "description": "Timestamp when the reservation was created",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Timestamp when the reservation was updated",
+                        "type": "string",
+                        "format": "date-time"
                     }
                 },
                 "type": "object"
@@ -1921,7 +3938,7 @@
                 ],
                 "properties": {
                     "id": {
-                        "description": "Route ID",
+                        "description": "Primary key of the route",
                         "type": "string",
                         "format": "uuid"
                     },
@@ -1958,6 +3975,16 @@
                         "description": "Price",
                         "type": "number",
                         "format": "float"
+                    },
+                    "created_at": {
+                        "description": "Timestamp when the route was created",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Timestamp when the route was updated",
+                        "type": "string",
+                        "format": "date-time"
                     }
                 },
                 "type": "object"
@@ -1975,7 +4002,7 @@
                 ],
                 "properties": {
                     "id": {
-                        "description": "User ID",
+                        "description": "Primary key of the report user",
                         "type": "string",
                         "format": "uuid"
                     },
@@ -2004,6 +4031,201 @@
                     "role": {
                         "description": "Role of the user",
                         "type": "string"
+                    },
+                    "created_at": {
+                        "description": "Timestamp when the user was created",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Timestamp when the user was updated",
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "UserCar": {
+                "title": "UserCar",
+                "description": "UserCar model",
+                "required": [
+                    "id",
+                    "user_id",
+                    "car_id",
+                    "year",
+                    "thumbnail",
+                    "color"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "Primary key of the userCar ",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "user_id": {
+                        "description": "User ID",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "car_id": {
+                        "description": "Car ID",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "year": {
+                        "description": "Car manufacturing year",
+                        "type": "string"
+                    },
+                    "thumbnail": {
+                        "description": "Thumbnail URL of the car",
+                        "type": "string"
+                    },
+                    "color": {
+                        "description": "Car color",
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "description": "Timestamp when the user car was created",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Timestamp when the user car was updated",
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "Report": {
+                "title": "Report",
+                "description": "Report model",
+                "required": [
+                    "id",
+                    "reporter_id",
+                    "reported_user_id",
+                    "reason"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "Primary key of the report",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "reporter_id": {
+                        "description": "ID of the reporter",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "reported_user_id": {
+                        "description": "ID of the reported user",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "reason": {
+                        "description": "Reason for the report",
+                        "type": "integer"
+                    },
+                    "description": {
+                        "description": "Description of the report",
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "description": "Timestamp when the report was created",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Timestamp when the report was last updated",
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "Rating": {
+                "title": "Rating",
+                "description": "Rating model",
+                "required": [
+                    "id",
+                    "rated_user_id",
+                    "rater_id",
+                    "stars_number"
+                ],
+                "properties": {
+                    "id": {
+                        "description": "Primary key of the rating",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "rated_user_id": {
+                        "description": "ID of the rated user",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "rater_id": {
+                        "description": "ID of the rater",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "stars_number": {
+                        "description": "Number of stars",
+                        "type": "integer"
+                    },
+                    "description": {
+                        "description": "Description of the rating",
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "description": "Timestamp when the rating was created",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Timestamp when the rating was last updated",
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "Suggestion": {
+                "title": "Suggestion",
+                "description": "Suggestion model",
+                "required": [
+                    "uuid",
+                    "user_id",
+                    "type",
+                    "content"
+                ],
+                "properties": {
+                    "uuid": {
+                        "description": "Primary key of the suggestion",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "user_id": {
+                        "description": "ID of the user who made the suggestion",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "type": {
+                        "description": "Type of the suggestion",
+                        "type": "string"
+                    },
+                    "content": {
+                        "description": "Content of the suggestion",
+                        "type": "string"
+                    },
+                    "created_at": {
+                        "description": "Timestamp when the suggestion was created",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Timestamp when the suggestion was last updated",
+                        "type": "string",
+                        "format": "date-time"
                     }
                 },
                 "type": "object"

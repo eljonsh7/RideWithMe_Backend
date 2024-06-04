@@ -15,18 +15,21 @@ use Illuminate\Http\Request;
  *     title="Location",
  *     description="Location model",
  *     required={"id", "city_id", "name","google_maps_link"},
- *     @OA\Property(property="id", type="string", format="uuid", description="Location ID"),
+ *     @OA\Property(property="id", type="string", format="uuid", description="Primary key of the location"),
  *     @OA\Property(property="city_id", type="string", format="uuid", description="ID of the city"),
  *     @OA\Property(property="name", type="string", description="Name of the location"),
- *     @OA\Property(property="google_maps_link", type="string", nullable=true, description="Google Maps link for the location")
+ *     @OA\Property(property="google_maps_link", type="string", nullable=true, description="Google Maps link for the location"),
+ *     @OA\Property(property="created_at", type="string", format="date-time", description="Timestamp when the location was created"),
+ *     @OA\Property(property="updated_at", type="string", format="date-time", description="Timestamp when the location was updated"),
  * )
  */
 class LocationController extends Controller
 {
     /**
      * @OA\Post(
-     *     path="/v1/locations/store",
+     *     path="/api/v1/locations/store",
      *     tags={"Location"},
+     *     security={{"bearerAuth": {}}},
      *     summary="Create location",
      *     description="Create a new location",
      *     @OA\RequestBody(
@@ -92,8 +95,9 @@ class LocationController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/v1/locations/delete/{locationId}",
+     *     path="/api/v1/locations/delete/{locationId}",
      *     tags={"Location"},
+     *     security={{"bearerAuth": {}}},
      *     summary="Delete location",
      *     description="Delete a location",
      *     @OA\Parameter(
@@ -129,8 +133,9 @@ class LocationController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/v1/locations/get/{cityId}",
+     *     path="/api/v1/locations/get/{cityId}",
      *     tags={"Location"},
+     *     security={{"bearerAuth": {}}},
      *     summary="Get all locations",
      *     description="Get all locations for a specific city",
      *     @OA\Parameter(
@@ -167,8 +172,9 @@ class LocationController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/v1/locations/{id}",
+     *     path="/api/v1/locations/{id}",
      *     tags={"Location"},
+     *     security={{"bearerAuth": {}}},
      *     summary="Get location",
      *     description="Get a location by ID",
      *     @OA\Parameter(
@@ -211,8 +217,9 @@ class LocationController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/v1/locations/update/{id}",
+     *     path="/api/v1/locations/update/{id}",
      *     tags={"Location"},
+     *     security={{"bearerAuth": {}}},
      *     summary="Update location",
      *     description="Update a location by ID",
      *     @OA\Parameter(

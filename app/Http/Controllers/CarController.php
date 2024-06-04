@@ -14,19 +14,21 @@ use Illuminate\Http\Request;
  *      title="Car",
  *      description="Car model",
  *      required={"id", "brand", "serie", "type", "seats_number", "thumbnail"},
- *      @OA\Property(property="id",format="uuid", type="string"),
- *      @OA\Property(property="brand", type="string"),
- *      @OA\Property(property="serie", type="string"),
- *      @OA\Property(property="type", type="string"),
- *      @OA\Property(property="seats_number", type="integer"),
- *      @OA\Property(property="thumbnail", type="string"),
+ *      @OA\Property(property="id",format="uuid", type="string", description="Primary key of the car"),
+ *      @OA\Property(property="brand", type="string", description="Brand of the car"),
+ *      @OA\Property(property="serie", type="string", description="Serie of the car"),
+ *      @OA\Property(property="type", type="string", description="Type of the car"),
+ *      @OA\Property(property="seats_number", type="integer", description="Seats number of the car"),
+ *      @OA\Property(property="thumbnail", type="string", description="Thumbnail of the car"),
+ *      @OA\Property(property="created_at", type="string", format="date-time", description="Timestamp when the car was created"),
+ *      @OA\Property(property="updated_at", type="string", format="date-time", description="Timestamp when the car was updated"),
  *)
  */
 class CarController extends Controller
 {
     /**
      * @OA\Post(
-     *     path="/v1/cars/store",
+     *     path="/api/v1/cars/store",
      *     summary="Create a new car",
      *     tags={"Car"},
      *     security={{"bearerAuth": {}}},
@@ -106,7 +108,7 @@ class CarController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/v1/cars/delete/{carId}",
+     *     path="/api/v1/cars/delete/{carId}",
      *     summary="Delete a car by ID",
      *     tags={"Car"},
      *     security={{"bearerAuth": {}}},
@@ -152,7 +154,7 @@ class CarController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/v1/cars/get",
+     *     path="/api/v1/cars/get",
      *     summary="Get all cars",
      *     tags={"Car"},
      *     security={{"bearerAuth": {}}},
@@ -188,7 +190,7 @@ class CarController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/v1/cars/update/{id}",
+     *     path="/api/v1/cars/update/{id}",
      *     summary="Update a car by ID",
      *     tags={"Car"},
      *     security={{"bearerAuth": {}}},

@@ -8,9 +8,10 @@ class MediaController extends Controller
 {
     /**
  * @OA\Post(
- *     path="/v1/media/store",
+ *     path="/api/v1/media/store",
  *     summary="Store media file",
  *     tags={"Media"},
+ *     security={{"bearerAuth": {}}},
  *     @OA\RequestBody(
  *         required=true,
  *         description="Media file to store",

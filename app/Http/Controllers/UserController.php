@@ -25,20 +25,39 @@ use Ramsey\Uuid\Uuid;
  *     title="User",
  *     description="User model",
  *     required={"id", "first_name", "last_name", "email", "password", "role"},
- *     @OA\Property(property="id", type="string", format="uuid", description="User ID"),
+ *     @OA\Property(property="id", type="string", format="uuid", description="Primary key of the report user"),
  *     @OA\Property(property="first_name", type="string", description="First name of the user"),
  *     @OA\Property(property="last_name", type="string", description="Last name of the user"),
  *     @OA\Property(property="profile_picture", type="string", nullable=true, description="URL of the user's profile picture"),
  *     @OA\Property(property="email", type="string", format="email", description="Email address of the user"),
  *     @OA\Property(property="password", type="string", description="Password of the user"),
- *     @OA\Property(property="role", type="string", description="Role of the user")
+ *     @OA\Property(property="role", type="string", description="Role of the user"),
+ *     @OA\Property(property="created_at", type="string", format="date-time", description="Timestamp when the user was created"),
+ *     @OA\Property(property="updated_at", type="string", format="date-time", description="Timestamp when the user was updated"),
+ * )
+ * 
+ * @OA\Schema(
+ *      schema="UserCar",
+ *      type="object",
+ *      title="UserCar",
+ *      description="UserCar model",
+ *      required={"id", "user_id", "car_id", "year", "thumbnail", "color"},
+ *      @OA\Property(property="id", format="uuid", type="string", description="Primary key of the userCar "),
+ *      @OA\Property(property="user_id", format="uuid", type="string", description="User ID"),
+ *      @OA\Property(property="car_id", format="uuid", type="string", description="Car ID"),
+ *      @OA\Property(property="year", type="string", description="Car manufacturing year"),
+ *      @OA\Property(property="thumbnail", type="string", description="Thumbnail URL of the car"),
+ *      @OA\Property(property="color", type="string", description="Car color"),
+ *      @OA\Property(property="created_at", type="string", format="date-time", description="Timestamp when the user car was created"),
+ *      @OA\Property(property="updated_at", type="string", format="date-time", description="Timestamp when the user car was updated")
  * )
  */
+
 class UserController extends Controller
 {
     /**
      * @OA\Post(
-     *     path="/v1/login",
+     *     path="/api/v1/login",
      *     tags={"User"},
      *     summary="Login user",
      *     description="Login a user with email and password",
@@ -109,7 +128,7 @@ class UserController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/v1/signup",
+     *     path="/api/v1/signup",
      *     tags={"User"},
      *     summary="Signup user",
      *     description="Signup a new user",
@@ -179,8 +198,9 @@ class UserController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/v1/users/get",
+     *     path="/api/v1/users/get",
      *     tags={"User"},
+     *     security={{"bearerAuth": {}}},
      *     summary="Get all users",
      *     description="Get a list of all users",
      *     @OA\Response(
@@ -224,8 +244,9 @@ class UserController extends Controller
 
     /**
      * @OA\Put(
-     *     path="/v1/users/update/{userId}",
+     *     path="/api/v1/users/update/{userId}",
      *     tags={"User"},
+     *     security={{"bearerAuth": {}}},
      *     summary="Update user",
      *     description="Update user details",
      *     @OA\Parameter(
@@ -285,8 +306,9 @@ class UserController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/v1/users/delete/{userId}",
+     *     path="/api/v1/users/delete/{userId}",
      *     tags={"User"},
+     *     security={{"bearerAuth": {}}},
      *     summary="Delete user",
      *     description="Delete a user by ID",
      *     @OA\Parameter(
@@ -321,8 +343,9 @@ class UserController extends Controller
 
     /**
      * @OA\Post(
-     *     path="/v1/users/ban/{userId}",
+     *     path="/api/v1/users/ban/{userId}",
      *     tags={"User"},
+     *     security={{"bearerAuth": {}}},
      *     summary="Ban user",
      *     description="Ban a user by ID",
      *     @OA\Parameter(
@@ -375,8 +398,9 @@ class UserController extends Controller
 
     /**
      * @OA\Delete(
-     *     path="/v1/users/ban/remove/{userId}",
+     *     path="/api/v1/users/ban/remove/{userId}",
      *     tags={"User"},
+     *     security={{"bearerAuth": {}}},
      *     summary="Remove ban from user",
      *     description="Remove ban from a user by ID",
      *     @OA\Parameter(
@@ -413,8 +437,9 @@ class UserController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/v1/users/{id}",
+     *     path="/api/v1/users/{id}",
      *     tags={"User"},
+     *     security={{"bearerAuth": {}}},
      *     summary="Get user by ID",
      *     description="Get user information by user ID",
      *     @OA\Parameter(
@@ -494,8 +519,9 @@ class UserController extends Controller
 
     /**
      * @OA\Get(
-     *     path="/v1/users/getByToken",
+     *     path="/api/v1/users/getByToken",
      *     tags={"User"},
+     *     security={{"bearerAuth": {}}},
      *     summary="Get current user",
      *     description="Get information of the current authenticated user",
      *     security={{"bearerAuth":{}}},
@@ -532,6 +558,46 @@ class UserController extends Controller
         return response()->json(['message' => 'Token is valid', 'user' => $user]);
     }
 
+    /**
+ * @OA\Post(
+ *     path="/api/v1/users/car/attach",
+ *     tags={"User"},
+ *     security={{"bearerAuth": {}}},
+ *     summary="Attach a car to the user",
+ *     description="Attach a car to the authenticated user",
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\JsonContent(
+ *             @OA\Property(property="car_id", format="uuid", type="string", description="ID of the car to attach"),
+ *             @OA\Property(property="year", type="string", description="Car manufacturing year"),
+ *             @OA\Property(property="thumbnail", type="string", description="Thumbnail URL of the car"),
+ *             @OA\Property(property="color", type="string", description="Car color")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Car attached successfully",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="message", type="string", example="Car attached successfully.")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=400,
+ *         description="Bad request",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="message", type="string", example="Bad request")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=500,
+ *         description="An error occurred",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="message", type="string", example="An error occurred.")
+ *         )
+ *     )
+ * )
+ */
+
     public function attachCar(Request $request)
     {
         $request->validate([
@@ -553,6 +619,45 @@ class UserController extends Controller
 
         return response()->json(['message' => 'Car attached successfully.'], 200);
     }
+
+    /**
+ * @OA\Put(
+ *     path="/api/v1/users/car/update",
+ *     tags={"User"},
+ *     security={{"bearerAuth": {}}},
+ *     summary="Update attached car details",
+ *     description="Update the details of the car attached to the authenticated user",
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\JsonContent(
+ *             @OA\Property(property="year", type="string", description="Car manufacturing year", nullable=true),
+ *             @OA\Property(property="thumbnail", type="string", description="Thumbnail URL of the car", nullable=true),
+ *             @OA\Property(property="color", type="string", description="Car color", nullable=true)
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="Car updated successfully",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="message", type="string", example="Car updated successfully.")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="Car not found",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="message", type="string", example="Car not found.")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=500,
+ *         description="An error occurred",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="message", type="string", example="An error occurred.")
+ *         )
+ *     )
+ * )
+ */
 
     public function UpdateAttachedCar(Request $request) {
         $request->validate([
