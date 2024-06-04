@@ -206,6 +206,7 @@ class LocationController extends Controller
         }
 
         return response()->json([
+            'message' => 'Location fetched successfully',
             'success' => true,
             'data' => $location
         ], 200);

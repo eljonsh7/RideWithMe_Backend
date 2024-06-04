@@ -259,13 +259,18 @@ class ReservationController extends Controller
             $reservations = Reservation::where('user_id', $user->id)
                 ->where('status', '!=', 'canceled')
                 ->where('status', '!=', 'rejected')
-                ->with('route')
+                ->with(['route.driver', 'route.cityFrom', 'route.cityTo'])
                 ->get();
-            return response()->json(['message' => 'Reservations fetched successfully.', 'reservations' => $reservations], 200);
+
+            // Extract routes from reservations
+            $routes = $reservations->map(function ($reservation) {
+                return $reservation->route;
+            });
+
+            return response()->json(['message' => 'Reservations fetched successfully.', 'routes' => $routes], 200);
         } catch (Exception $e) {
             return response()->json(['message' => 'An error occurred.', 'error' => $e->getMessage()], 500);
         }
     }
-
 
 }

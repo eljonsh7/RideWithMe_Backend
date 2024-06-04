@@ -236,7 +236,7 @@ class ChatController extends Controller
             return $conversation['last_message']['created_at'] ?? null;
         })->values()->all();
 
-        return response()->json(['conversations' => $conversationData]);
+        return response()->json(['message' => 'Conversations fetched successfully', 'conversations' => $conversationData]);
     }
 
     /**

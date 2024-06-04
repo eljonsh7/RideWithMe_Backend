@@ -48,7 +48,7 @@ class ReportReasonController extends Controller
     {
         try {
             $reasons = ReportReason::get();
-            return response()->json(['reasons' => $reasons], 200);
+            return response()->json(['message' => 'Report inserted successfully', 'reasons' => $reasons], 200);
         } catch (Exception $e) {
             return response()->json(['message' => 'An error occurred.', 'error' => $e->getMessage()], 500);
         }

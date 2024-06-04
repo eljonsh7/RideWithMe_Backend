@@ -73,10 +73,10 @@ class RouteController extends Controller
         $currentDateTime = Carbon::now()->format('Y-m-d H:i:s');
         $query = Route::query()->where('datetime', '>', $currentDateTime);
 
-        $routes = $query->paginate($request->pageSize, ['*'], 'page', $request->page);
+        $routes = $query->paginate(6, ['*'], 'page', $request->page);
 
         $routes = $this->formatRoutes($routes);
-        return response()->json($routes,200);
+        return response()->json(['message' => 'Routes fetched successfully', 'routes' => $routes],200);
     }
 
     private function formatRoutes($routes){
@@ -162,7 +162,7 @@ class RouteController extends Controller
 
         $routes = $this->formatRoutes($routes);
 
-        return response()->json($routes, 200);
+        return response()->json(['message' => 'Route searched successfully', 'routes' => $routes], 200);
     }
 
     /**
@@ -203,7 +203,7 @@ class RouteController extends Controller
 
         $route = Route::create($request->all());
         $this->addGroup($user,$route->id);
-        return response()->json($route, 201);
+        return response()->json(['message' => 'Route inserted successfully', 'route' => $route], 201);
     }
 
     /**
@@ -301,7 +301,7 @@ class RouteController extends Controller
             $query->where('user_id', $user->id);
         }])->find($route->id)->reservations->first();
         $route->takenSeatByUser = $reservFromUser ? ['id'=>$reservFromUser->id,'seat' =>$reservFromUser->seat,'status'=>$reservFromUser->status]:null;
-        return response()->json($route, 200);
+        return response()->json(['message' => 'Route fetched successfully', 'route' => $route], 200);
     }
 
     /**
@@ -338,7 +338,7 @@ class RouteController extends Controller
 
         $routes = $this->formatRoutes($routes);
 
-        return response()->json($routes, 200);
+        return response()->json(['message' => 'Routes fetched successfully', 'routes' => $routes], 200);
     }
 
     public function addGroup($user,$route)
