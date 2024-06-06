@@ -14,7 +14,20 @@ class User extends Authenticatable
     protected $primaryKey = 'id';
     public $incrementing = false;
 
-    protected $fillable = [
-        'id', 'first_name', 'last_name', 'email', 'password', 'role',
+    protected $hidden = [
+        'password',
     ];
+
+    protected $fillable = [
+        'id', 'first_name', 'last_name', 'profile_picture', 'email', 'password', 'role',
+    ];
+
+    public function friends()
+    {
+        return $this->belongsToMany(User::class, 'friends', 'user_id', 'friend_id');
+    }
+
+    public function userCar() {
+        return $this->hasMany(UserCar::class, 'user_id');
+    }
 }

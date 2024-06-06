@@ -2,7 +2,7 @@
 
 namespace Tests\Http\Controllers;
 
-use App\Http\Controllers\CityController;
+use App\Http\Controllers\API\V1\CityController;
 use Illuminate\Http\Request;
 
 class CityControllerTest extends \Tests\TestCase

@@ -2,7 +2,7 @@
 
 namespace Tests\Http\Controllers;
 
-use App\Http\Controllers\RouteController;
+use App\Http\Controllers\API\V1\RouteController;
 use Illuminate\Http\Request;
 
 class RouteControllerTest extends \Tests\TestCase
