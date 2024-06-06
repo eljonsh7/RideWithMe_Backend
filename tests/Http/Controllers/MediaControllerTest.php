@@ -11,9 +11,9 @@ class MediaControllerTest extends TestCase
     /** @test */
     public function can_store_media_file()
     {
-        Storage::fake('public'); // Use fake storage for testing
+        Storage::fake('public'); 
 
-        $file = UploadedFile::fake()->create('test_file.jpg'); // Create a fake file
+        $file = UploadedFile::fake()->create('test_file.jpg'); 
 
         $response = $this->postJson('/v1/media/store', [
             'media' => $file,

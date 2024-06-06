@@ -116,14 +116,10 @@ class GroupChatControllerTest extends TestCase
                     'user_id',
                     'content',
                     'type',
-                    // Add other expected fields here
                 ],
             ]);
 
-        // Optionally, assert that the message was broadcasted
-        // Assert broadcasted event, if applicable
-
-        // Assert message is stored in the database
+        
         $this->assertDatabaseHas('messages', [
             'content' => 'Hello Group!',
             'type' => 'text',

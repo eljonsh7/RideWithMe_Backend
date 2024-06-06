@@ -18,8 +18,7 @@ class ReservationControllerTest extends TestCase
 
         $this->seed(); // Seed the database
         $this->user = User::factory()->create();
-        $this->actingAs($this->user); // Authenticate user for requests
-    }
+        $this->actingAs($this->user);
 
     /** @test */
     public function user_can_create_reservation()

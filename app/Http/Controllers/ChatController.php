@@ -1,137 +1,196 @@
 <?php
 
-namespace Tests\Feature;
+namespace App\Http\Controllers;
 
 use App\Events\MessageEvent;
 use App\Models\Conversation;
 use App\Models\ConversationMessage;
+use App\Models\Group;
 use App\Models\Message;
+use App\Models\Reservation;
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Event;
-use Tests\TestCase;
+use Illuminate\Support\Str;
+use Illuminate\Http\Request;
 
-class ChatControllerTest extends TestCase
+class ChatController extends Controller
 {
-    use RefreshDatabase;
 
-    protected function setUp(): void
+    public function sendMessage(Request $request, $recipient)
     {
-        parent::setUp();
-
-        $this->user = User::factory()->create();
-        $this->recipient = User::factory()->create();
-    }
-
-    /** @test */
-    public function user_can_send_message()
-    {
-        Event::fake();
-
-        $this->actingAs($this->user);
-
-        $response = $this->postJson(route('chat.sendMessage', $this->recipient->id), [
-            'message' => 'Hello',
-            'type' => 'text',
+        $request->validate([
+            'message' => 'required|string',
+            'type' => 'required|string',
         ]);
 
-        $response->assertStatus(200);
-        $this->assertDatabaseHas('messages', ['content' => 'Hello']);
-        $this->assertDatabaseHas('conversation_messages', [
-            'conversation_id' => Conversation::first()->id,
-        ]);
+        $authenticatedUserId = auth()->id();
 
-        Event::assertDispatched(MessageEvent::class);
-    }
+        $conversation1 = Conversation::firstOrCreate(
+            ['sender_id' => $authenticatedUserId, 'recipient_id' => $recipient, 'type' => 'private'],
+            ['unread_messages' => 0]
+        );
 
-    /** @test */
-    public function user_can_get_conversation()
-    {
-        $this->actingAs($this->user);
-
-        $conversation = Conversation::create([
-            'sender_id' => $this->user->id,
-            'recipient_id' => $this->recipient->id,
-            'type' => 'private',
-        ]);
+        $conversation2 = Conversation::firstOrCreate(
+            ['sender_id' => $recipient, 'recipient_id' => $authenticatedUserId, 'type' => 'private'],
+            ['unread_messages' => 0]
+        );
 
         $message = Message::create([
-            'user_id' => $this->user->id,
-            'content' => 'Hello',
-            'type' => 'text',
+            'user_id' => $authenticatedUserId,
+            'content' => $request->message,
+            'type' => $request->type,
         ]);
 
         ConversationMessage::create([
-            'conversation_id' => $conversation->id,
-            'message_id' => $message->id,
+            'conversation_id' => $conversation1->id,
+            'message_id' => $message->id
         ]);
-
-        $response = $this->getJson(route('chat.getConversation', [$this->recipient->id, 'private']));
-
-        $response->assertStatus(200);
-        $response->assertJsonStructure(['messages']);
-    }
-
-    /** @test */
-    public function user_can_get_conversations_with_messages()
-    {
-        $this->actingAs($this->user);
-
-        $conversation = Conversation::create([
-            'sender_id' => $this->user->id,
-            'recipient_id' => $this->recipient->id,
-            'type' => 'private',
-        ]);
-
-        $message = Message::create([
-            'user_id' => $this->user->id,
-            'content' => 'Hello',
-            'type' => 'text',
-        ]);
-
         ConversationMessage::create([
-            'conversation_id' => $conversation->id,
-            'message_id' => $message->id,
+            'conversation_id' => $conversation2->id,
+            'message_id' => $message->id
         ]);
 
-        $response = $this->getJson(route('chat.getConversationsWithMessages'));
+        // Increment unread messages for the recipient
+        if ($conversation1->sender_id == $recipient) {
+            $conversation1->increment('unread_messages');
+        } else {
+            $conversation2->increment('unread_messages');
+        }
 
-        $response->assertStatus(200);
-        $response->assertJsonStructure(['conversations']);
+        broadcast(new MessageEvent($message,$recipient))->toOthers();
+        broadcast(new MessageEvent($message, $authenticatedUserId))->toOthers();
+
+        return response()->json([
+            'message' => $message,
+        ]);
     }
 
-    /** @test */
-    public function user_can_delete_conversation()
+
+    public function getConversation($recipient, $type)
     {
-        $this->actingAs($this->user);
+        $user = auth()->user();
+        $authenticatedUserId = $user->id;
 
-        $conversation = Conversation::create([
-            'sender_id' => $this->user->id,
-            'recipient_id' => $this->recipient->id,
-            'type' => 'private',
-        ]);
+        $conversation = Conversation::where('recipient_id', $recipient)
+            ->where('type', $type)
+            ->when($type == 'private', function ($query) use ($authenticatedUserId) {
+                $query->where('sender_id', $authenticatedUserId);
+            })
+            ->when($type == 'group', function ($query) use ($authenticatedUserId, $recipient) {
+                $groupObj = Group::with(['route.driver'])
+                    ->find($recipient);
+                if ($groupObj) {
+                    // Check if the user is the driver
+                    $isDriver = $groupObj->route->driver->id == $authenticatedUserId;
 
-        $response = $this->deleteJson(route('chat.deleteConversation', $this->recipient->id));
+                    // Check if the user has a reservation in the route
+                    $hasReservation = Reservation::where('route_id', $groupObj->route->id)
+                        ->where('user_id', $authenticatedUserId)
+                        ->exists();
 
-        $response->assertStatus(200);
-        $this->assertDatabaseMissing('conversations', ['id' => $conversation->id]);
+                    if ($isDriver || $hasReservation) {
+                        $query->where('recipient_id', $recipient);
+                    } else {
+                        $query->whereRaw('1 = 0');
+                    }
+                } else {
+                    $query->whereRaw('1 = 0'); //No results are returned
+                }
+            })
+            ->first();
+
+        if (!$conversation) {
+            return response()->json(['messages' => [], 'status' => 'undefined'], 200);
+        }
+
+        $messages = $conversation->messages->map(function ($message) {
+            unset($message->pivot);
+
+            $sender = User::find($message->user_id);
+            unset($message->password);
+            $message->sender = $sender;
+
+            return $message;
+        });
+
+        return response()->json([
+            'messages' => $messages,
+        ], 200);
     }
 
-    /** @test */
-    public function user_can_mark_conversation_as_read()
+    public function getConversationsWithMessages()
     {
-        $this->actingAs($this->user);
+        $user = auth()->user();
 
-        $conversation = Conversation::create([
-            'sender_id' => $this->user->id,
-            'recipient_id' => $this->recipient->id,
-            'type' => 'private',
-            'unread_messages' => 5,
-        ]);
+        // Retrieve conversations with last message and recipient data
+        $conversations = Conversation::with(['messages' => function ($query) {
+            $query->orderBy('created_at', 'desc');
+        }, 'recipient'])
+            ->where('sender_id', $user->id)
+            ->where('type', 'private')
+            ->get();
 
-        $response = $this->patchJson(route('chat.markConversationAsRead', $this->recipient->id));
+        $conversationData = $conversations->map(function ($conversation) use ($user) {
+            $lastMessage = $conversation->messages->first();
+            $otherParticipant = User::find($conversation->recipient_id);
+            unset($otherParticipant->password);
 
-        $response->assertStatus(200);
-        $this->assertEquals(0, $conversation->fresh()->unread_messages);
+            return [
+                'id' => $conversation->id,
+                'sender' => $otherParticipant,
+                'type' => $conversation->type,
+                'unread_messages' => $conversation->unread_messages,
+                'last_message' => $lastMessage ? [
+                    'id' => $lastMessage->id,
+                    'content' => $lastMessage->content,
+                    'created_at' => $lastMessage->created_at,
+                    'type' => $lastMessage->type,
+                    'user_id' => $lastMessage->user_id,
+                ] : null,
+            ];
+        })->sortByDesc(function ($conversation) {
+            return $conversation['last_message']['created_at'] ?? null;
+        })->values()->all();
+
+        return response()->json(['conversations' => $conversationData]);
     }
+
+
+    public function deleteConversation($recipient)
+    {
+        $user = auth()->user();
+        $authenticatedUserId = $user->id;
+
+        $conversation = Conversation::where('sender_id', $authenticatedUserId)
+            ->where('recipient_id', $recipient)
+            ->where('type', 'private')
+            ->first();
+
+        if (!$conversation) {
+            return response()->json(['messages' => []], 404);
+        }
+
+        ConversationMessage::where('conversation_id', $conversation->id)->delete();
+
+        $conversation->delete();
+
+        return response()->json(['message' => 'Conversation deleted successfully']);
+    }
+
+
+    public function markConversationAsRead($recipient)
+    {
+        $authenticatedUserId = auth()->user()->id;
+
+        $conversation = Conversation::where('sender_id', $authenticatedUserId)
+            ->where('recipient_id', $recipient)
+            ->first();
+        if (!$conversation) {
+            return response()->json(['message' => 'Conversation not found'], 404);
+        }
+        $conversation->unread_messages = 0;
+        $conversation->update();
+
+        return response()->json(['message' => 'Conversations marked as read']);
+    }
+
 }
