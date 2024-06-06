@@ -36,7 +36,7 @@ class FriendController extends Controller
      *         name="user",
      *         in="path",
      *         required=true,
-     *         @OA\Schema(type="string", example="user-id-12345")
+     *         @OA\Schema(type="string", format="uuid")
      *     ),
      *     @OA\Response(
      *         response=200,
@@ -99,7 +99,7 @@ class FriendController extends Controller
      *         name="user",
      *         in="path",
      *         required=true,
-     *         @OA\Schema(type="string", example="user-id-12345")
+     *         @OA\Schema(type="string", format="uuid")
      *     ),
      *     @OA\Response(
      *         response=200,
@@ -172,7 +172,7 @@ class FriendController extends Controller
      *         name="user",
      *         in="path",
      *         required=true,
-     *         @OA\Schema(type="string", example="user-id-12345")
+     *         @OA\Schema(type="string", format="uuid")
      *     ),
      *     @OA\Response(
      *         response=200,
@@ -232,7 +232,7 @@ class FriendController extends Controller
      *         name="user",
      *         in="path",
      *         required=true,
-     *         @OA\Schema(type="string", example="user-id-12345")
+     *         @OA\Schema(type="string", format="uuid")
      *     ),
      *     @OA\Response(
      *         response=200,
@@ -277,7 +277,7 @@ class FriendController extends Controller
      *         name="user",
      *         in="path",
      *         required=true,
-     *         @OA\Schema(type="string", example="user-id-12345")
+     *         @OA\Schema(type="string", format="uuid")
      *     ),
      *     @OA\Response(
      *         response=200,
@@ -336,7 +336,7 @@ class FriendController extends Controller
      *         name="user",
      *         in="path",
      *         required=true,
-     *         @OA\Schema(type="string", example="user-id-12345")
+     *         @OA\Schema(type="string", format="uuid")
      *     ),
      *     @OA\Response(
      *         response=200,

@@ -95,7 +95,7 @@ class GroupChatController extends Controller
  *         name="group",
  *         in="path",
  *         required=true,
- *         @OA\Schema(type="string"),
+ *         @OA\Schema(type="string", format="uuid"),
  *         description="ID of the group"
  *     ),
  *     @OA\Response(
@@ -178,7 +178,7 @@ class GroupChatController extends Controller
  *         name="group",
  *         in="path",
  *         required=true,
- *         @OA\Schema(type="string"),
+ *         @OA\Schema(type="string", format="uuid"),
  *         description="ID of the group"
  *     ),
  *     @OA\RequestBody(

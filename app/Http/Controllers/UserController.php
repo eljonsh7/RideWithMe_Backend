@@ -253,7 +253,7 @@ class UserController extends Controller
      *         name="userId",
      *         in="path",
      *         required=true,
-     *         @OA\Schema(type="string")
+     *         @OA\Schema(type="string", format="uuid"),
      *     ),
      *     @OA\RequestBody(
      *         required=false,
@@ -315,7 +315,7 @@ class UserController extends Controller
      *         name="userId",
      *         in="path",
      *         required=true,
-     *         @OA\Schema(type="string")
+     *         @OA\Schema(type="string", format="uuid")
      *     ),
      *     @OA\Response(
      *         response=200,
@@ -352,7 +352,7 @@ class UserController extends Controller
      *         name="userId",
      *         in="path",
      *         required=true,
-     *         @OA\Schema(type="string")
+     *         @OA\Schema(type="string", format="uuid")
      *     ),
      *     @OA\RequestBody(
      *         required=true,
@@ -407,7 +407,7 @@ class UserController extends Controller
      *         name="userId",
      *         in="path",
      *         required=true,
-     *         @OA\Schema(type="string")
+     *         @OA\Schema(type="string", format="uuid")
      *     ),
      *     @OA\Response(
      *         response=200,
@@ -446,7 +446,7 @@ class UserController extends Controller
      *         name="id",
      *         in="path",
      *         required=true,
-     *         @OA\Schema(type="string")
+     *         @OA\Schema(type="string", format="uuid")
      *     ),
      *     @OA\Response(
      *         response=200,

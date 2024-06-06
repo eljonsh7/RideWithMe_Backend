@@ -118,7 +118,7 @@ class ReservationController extends Controller
      *         in="path",
      *         description="ID of the reservation",
      *         required=true,
-     *         @OA\Schema(type="integer")
+     *         @OA\Schema(type="string", format="uuid")
      *     ),
      *     @OA\RequestBody(
      *         required=true,

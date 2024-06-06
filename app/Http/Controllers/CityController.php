@@ -102,7 +102,7 @@ class CityController extends Controller
      *         in="path",
      *         required=true,
      *         description="ID of the city to be deleted",
-     *         @OA\Schema(type="integer")
+     *         @OA\Schema(type="string", format="uuid")
      *     ),
      *     @OA\Response(
      *         response=200,
@@ -168,7 +168,7 @@ class CityController extends Controller
      *         in="path",
      *         required=true,
      *         description="ID of the city to be updated",
-     *         @OA\Schema(type="integer")
+     *         @OA\Schema(type="string", format="uuid")
      *     ),
      *     @OA\RequestBody(
      *         required=true,
@@ -237,7 +237,7 @@ class CityController extends Controller
      *         in="path",
      *         required=true,
      *         description="ID of the city to be retrieved",
-     *         @OA\Schema(type="integer")
+     *         @OA\Schema(type="string", format="uuid")
      *     ),
      *     @OA\Response(
      *         response=200,

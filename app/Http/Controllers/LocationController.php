@@ -105,7 +105,7 @@ class LocationController extends Controller
      *         in="path",
      *         required=true,
      *         description="ID of the location to delete",
-     *         @OA\Schema(type="string")
+     *         @OA\Schema(type="string", format="uuid")
      *     ),
      *     @OA\Response(
      *         response=200,
@@ -143,7 +143,7 @@ class LocationController extends Controller
      *         in="path",
      *         required=true,
      *         description="ID of the city",
-     *         @OA\Schema(type="string")
+     *         @OA\Schema(type="string", format="uuid")
      *     ),
      *     @OA\Response(
      *         response=200,
@@ -182,7 +182,7 @@ class LocationController extends Controller
      *         in="path",
      *         required=true,
      *         description="ID of the location",
-     *         @OA\Schema(type="string")
+     *         @OA\Schema(type="string", format="uuid")
      *     ),
      *     @OA\Response(
      *         response=200,
@@ -227,7 +227,7 @@ class LocationController extends Controller
      *         in="path",
      *         required=true,
      *         description="ID of the location",
-     *         @OA\Schema(type="string")
+     *         @OA\Schema(type="string", format="uuid")
      *     ),
      *     @OA\RequestBody(
      *         required=true,

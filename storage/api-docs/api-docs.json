@@ -112,7 +112,8 @@
                         "in": "path",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "format": "uuid"
                         }
                     }
                 ],
@@ -215,7 +216,8 @@
                         "in": "path",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "format": "uuid"
                         }
                     }
                 ],
@@ -615,7 +617,8 @@
                         "description": "ID of the city to be deleted",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "string",
+                            "format": "uuid"
                         }
                     }
                 ],
@@ -682,7 +685,8 @@
                         "description": "ID of the city to be updated",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "string",
+                            "format": "uuid"
                         }
                     }
                 ],
@@ -762,7 +766,8 @@
                         "description": "ID of the city to be retrieved",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "string",
+                            "format": "uuid"
                         }
                     }
                 ],
@@ -802,7 +807,7 @@
                         "required": true,
                         "schema": {
                             "type": "string",
-                            "example": "user-id-12345"
+                            "format": "uuid"
                         }
                     }
                 ],
@@ -861,7 +866,7 @@
                         "required": true,
                         "schema": {
                             "type": "string",
-                            "example": "user-id-12345"
+                            "format": "uuid"
                         }
                     }
                 ],
@@ -920,7 +925,7 @@
                         "required": true,
                         "schema": {
                             "type": "string",
-                            "example": "user-id-12345"
+                            "format": "uuid"
                         }
                     }
                 ],
@@ -979,7 +984,7 @@
                         "required": true,
                         "schema": {
                             "type": "string",
-                            "example": "user-id-12345"
+                            "format": "uuid"
                         }
                     }
                 ],
@@ -1038,7 +1043,7 @@
                         "required": true,
                         "schema": {
                             "type": "string",
-                            "example": "user-id-12345"
+                            "format": "uuid"
                         }
                     }
                 ],
@@ -1113,7 +1118,7 @@
                         "required": true,
                         "schema": {
                             "type": "string",
-                            "example": "user-id-12345"
+                            "format": "uuid"
                         }
                     }
                 ],
@@ -1303,7 +1308,8 @@
                         "description": "ID of the group",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "format": "uuid"
                         }
                     }
                 ],
@@ -1384,7 +1390,8 @@
                         "description": "ID of the group",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "format": "uuid"
                         }
                     }
                 ],
@@ -1559,7 +1566,8 @@
                         "description": "ID of the location to delete",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "format": "uuid"
                         }
                     }
                 ],
@@ -1606,7 +1614,8 @@
                         "description": "ID of the city",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "format": "uuid"
                         }
                     }
                 ],
@@ -1655,7 +1664,8 @@
                         "description": "ID of the location",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "format": "uuid"
                         }
                     }
                 ],
@@ -1696,7 +1706,8 @@
                         "description": "ID of the location",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "format": "uuid"
                         }
                     }
                 ],
@@ -1980,7 +1991,8 @@
                         "description": "ID of the reservation",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "string",
+                            "format": "uuid"
                         }
                     }
                 ],
@@ -2331,7 +2343,8 @@
                         "description": "ID of the route to delete",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "string",
+                            "format": "uuid"
                         }
                     }
                 ],
@@ -2382,7 +2395,8 @@
                         "description": "ID of the route",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "string",
+                            "format": "uuid"
                         }
                     }
                 ],
@@ -2423,7 +2437,8 @@
                         "description": "ID of the driver",
                         "required": true,
                         "schema": {
-                            "type": "integer"
+                            "type": "string",
+                            "format": "uuid"
                         }
                     }
                 ],
@@ -2627,7 +2642,8 @@
                         "in": "path",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "format": "uuid"
                         }
                     }
                 ],
@@ -2699,7 +2715,8 @@
                         "in": "path",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "format": "uuid"
                         }
                     }
                 ],
@@ -2744,7 +2761,8 @@
                         "in": "path",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "format": "uuid"
                         }
                     }
                 ],
@@ -2805,7 +2823,8 @@
                         "in": "path",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "format": "uuid"
                         }
                     }
                 ],
@@ -2850,7 +2869,8 @@
                         "in": "path",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "string",
+                            "format": "uuid"
                         }
                     }
                 ],

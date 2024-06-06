@@ -220,7 +220,7 @@ class RouteController extends Controller
      *         in="path",
      *         description="ID of the route to delete",
      *         required=true,
-     *         @OA\Schema(type="integer")
+     *         @OA\Schema(type="string", format="uuid"),
      *     ),
      *     @OA\Response(
      *         response=200,
@@ -267,7 +267,7 @@ class RouteController extends Controller
      *         in="path",
      *         description="ID of the route",
      *         required=true,
-     *         @OA\Schema(type="integer")
+     *         @OA\Schema(type="string", format="uuid"),
      *     ),
      *     @OA\Response(
      *         response=200,
@@ -318,7 +318,7 @@ class RouteController extends Controller
      *         in="path",
      *         description="ID of the driver",
      *         required=true,
-     *         @OA\Schema(type="integer")
+     *         @OA\Schema(type="string", format="uuid"),
      *     ),
      *     @OA\Response(
      *         response=200,

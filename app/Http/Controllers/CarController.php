@@ -116,7 +116,7 @@ class CarController extends Controller
      *         name="carId",
      *         in="path",
      *         required=true,
-     *         @OA\Schema(type="string")
+     *         @OA\Schema(type="string", format="uuid")
      *     ),
      *     @OA\Response(
      *         response=200,
@@ -198,7 +198,7 @@ class CarController extends Controller
      *         name="id",
      *         in="path",
      *         required=true,
-     *         @OA\Schema(type="string")
+     *         @OA\Schema(type="string", format="uuid")
      *     ),
      *     @OA\RequestBody(
      *         required=true,
