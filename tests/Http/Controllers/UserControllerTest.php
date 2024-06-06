@@ -2,7 +2,7 @@
 
 namespace Tests\Http\Controllers;
 
-use App\Http\Controllers\UserController;
+use App\Http\Controllers\API\V1\UserController;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
 

@@ -1,18 +1,18 @@
 <?php
 
-use App\Http\Controllers\CarController;
-use App\Http\Controllers\ChatController;
-use App\Http\Controllers\CityController;
-use App\Http\Controllers\FriendController;
-use App\Http\Controllers\GroupChatController;
-use App\Http\Controllers\LocationController;
-use App\Http\Controllers\MediaController;
-use App\Http\Controllers\NotificationController;
-use App\Http\Controllers\ReservationController;
-use App\Http\Controllers\RouteController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\UserFeedbackController;
-use App\Http\Controllers\ReportReasonController;
+use App\Http\Controllers\API\V1\CarController;
+use App\Http\Controllers\API\V1\ChatController;
+use App\Http\Controllers\API\V1\CityController;
+use App\Http\Controllers\API\V1\FriendController;
+use App\Http\Controllers\API\V1\GroupChatController;
+use App\Http\Controllers\API\V1\LocationController;
+use App\Http\Controllers\API\V1\MediaController;
+use App\Http\Controllers\API\V1\NotificationController;
+use App\Http\Controllers\API\V1\ReportReasonController;
+use App\Http\Controllers\API\V1\ReservationController;
+use App\Http\Controllers\API\V1\RouteController;
+use App\Http\Controllers\API\V1\UserController;
+use App\Http\Controllers\API\V1\UserFeedbackController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -46,7 +46,7 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
     Route::delete('users/ban/remove/{userId}', [UserController::class, 'removeBan']);
 
     Route::post('users/car/attach', [UserController::class, 'attachCar']);
-    Route::put('users/car/update', [UserController::class, 'UpdateAttachedCar']);
+    Route::put('users/car/update', [UserController::class, 'updateAttachedCar']);
 
     Route::post('media/store', [MediaController::class, 'store']);
 
@@ -58,7 +58,6 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
     Route::post('locations/store', [LocationController::class, 'store']);
     Route::delete('locations/delete/{locationId}', [LocationController::class, 'delete']);
     Route::get('locations/get/{cityId}', [LocationController::class, 'getAllLocations']);
-    Route::get('locations/{locationId}', [LocationController::class, 'getLocation']);
     Route::put('locations/update/{id}', [LocationController::class, 'update']);
 
     Route::post('cars/store', [CarController::class, 'store']);
@@ -66,7 +65,6 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
     Route::get('cars/get', [CarController::class, 'getAllCars']);
     Route::put('cars/update/{id}', [CarController::class, 'update']);
 
-    Route::post('routes/search', [RouteController::class,'search']);
     Route::post('routes/add', [RouteController::class, 'addRoute']);
     Route::post('routes/get', [RouteController::class, 'index']);
     Route::delete('routes/delete/{id}', [RouteController::class, 'deleteRoute']);
@@ -105,7 +103,7 @@ Route::middleware('auth:sanctum')->prefix('v1')->group(function () {
 
     Route::post('reports/add/{user}',[UserFeedbackController::class,'addReport']);
     Route::delete('reports/delete/{user}',[UserFeedbackController::class,'deleteReport']);
-    Route::get('report/reasons/get',[ReportReasonController::class,'index']);
+    Route::get('report/reasons/get',[ReportReasonController::class,'getReportReasons']);
 
     Route::post('suggestions/add',[UserFeedbackController::class,'addSuggestion']);
     Route::delete('suggestions/delete/{suggestion}',[UserFeedbackController::class,'deleteSuggestion']);

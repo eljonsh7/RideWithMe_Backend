@@ -27,4 +27,7 @@ class User extends Authenticatable
         return $this->belongsToMany(User::class, 'friends', 'user_id', 'friend_id');
     }
 
+    public function userCar() {
+        return $this->hasMany(UserCar::class, 'user_id');
+    }
 }
