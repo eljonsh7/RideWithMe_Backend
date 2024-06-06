@@ -101,9 +101,7 @@ class ReservationController extends Controller
             'id' => $notificationData->id,
             'user_id' => $notificationData->user_id,
             'sender_id' => $notificationData->sender_id,
-            'type' => $notificationData->type,
-            'created_at' => $notificationData->created_at,
-            'user' => $sender
+            'message' => $sender->first_name . " " . $sender->last_name . ' sent you a route reservation request.',
         ];
         broadcast(new NotificationEvent($notificationEventData))->toOthers();
         return response()->json($reservation, 201);
@@ -154,8 +152,8 @@ class ReservationController extends Controller
     {
         $data = $request->validated();
         try {
-            $reservation = Reservation::find($reservation)->first();
-            $reservation->status = $request->status;
+            $reservation = Reservation::where('id', $reservation)->first();
+            $reservation->status = $data['status'];
             $reservation->save();
             $sender = auth()->user();
             unset($sender->password);
@@ -169,12 +167,10 @@ class ReservationController extends Controller
                 'id' => $notificationData->id,
                 'user_id' => $notificationData->user_id,
                 'sender_id' => $notificationData->sender_id,
-                'type' => $notificationData->type,
-                'created_at' => $notificationData->created_at,
-                'user' => $sender
+                'message' => $sender->first_name . " " . $sender->last_name . ' ' . $reservation->status . ' reservation.',
             ];
             broadcast(new NotificationEvent($notificationEventData))->toOthers();
-            return response()->json(['message' => 'Reservation ' . $data['status'] . ".", 'reservation' => $reservation], 200);
+            return response()->json(['message' => 'Reservation ' . $reservation->status . ".", 'reservation' => $reservation], 200);
         } catch (Exception $e) {
             return response()->json(['message' => 'An error occurred.', 'error' => $e->getMessage()], 500);
         }
